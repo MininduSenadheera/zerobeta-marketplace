@@ -67,7 +67,7 @@ export default function Signup() {
         </div>
       </div>
       <div className="flex w-full items-center justify-center md:w-1/2">
-        <div className="space-y-4 py-4 container mx-auto max-w-md px-4 sm:px-0">
+        <div className="space-y-4 container mx-auto max-w-md px-4 sm:px-0">
           <h1 className="text-3xl font-bold">Sign Up</h1>
           <p className="text-sm">Enter your details to create a new account</p>
           <form onSubmit={handleSubmit} className="space-y-4">
