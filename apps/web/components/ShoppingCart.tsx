@@ -122,7 +122,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                 <div className='w-full'>
                   <Button
                     variant="outline" className='w-full'
-                    onClick={() => { props.setIsCartOpen(false); router.push('/shop') }}
+                    onClick={() => { props.setIsCartOpen(false); router.push('/products') }}
                   >
                     Continue Shopping
                   </Button>
