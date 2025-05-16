@@ -88,7 +88,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                         </div>
                         <div className="flex justify-between items-center">
                           <QuantityField
-                            quantity={item.quantity}
+                            quantity={item.quantity} max={product.stock}
                             setQuantity={(q: number) => { updateQuantity(product.id, q); fetchCartProducts() }}
                           />
                           <p className="font-semibold">
