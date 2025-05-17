@@ -9,6 +9,7 @@ import { CartContext } from '@/context/CartContext'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import QuantityField from './QuantityField'
+import { Skeleton } from './ui/skeleton'
 
 function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunction }) {
   const router = useRouter()
@@ -32,7 +33,6 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
         return
       }
       // TODO: Fetch products by IDs from server
-      setProducts([])
       setProductQuantities(JSON.parse(localStorage.getItem('cart') || '[]'))
     } catch (error) {
       console.log('Error getting products: ', error)
@@ -55,7 +55,11 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
           <SheetTitle>Shopping Cart</SheetTitle>
         </SheetHeader>
         {isLoading ? (
-          <div className="flex justify-center items-center flex-grow">Loading...</div>
+          <div className="grid grid-cols-1 gap-4 px-4">
+            {[1, 2, 3].map((index) => (
+              <Skeleton key={index} className="h-[100px] w-full rounded-xl" />
+            ))}
+          </div>
         ) : (
           <div className="grow-1 overflow-y-auto px-4">
             {productQuantities.length > 0 ? (
