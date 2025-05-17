@@ -28,22 +28,23 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
   const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
+    if (!productId) return;
+
+    const fetchProduct = async () => {
+      try {
+        setIsLoading(true);
+
+        // TODO: Replace with your real API endpoint
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchProduct();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
-  const fetchProduct = async () => {
-    try {
-      setIsLoading(true);
-      if (!productId) throw new Error("Product ID is undefined");
-
-      // TODO: Replace with your real API endpoint
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (isLoading || !product) {
     return (
@@ -52,6 +53,8 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
       </div>
     );
   }
+
+  const isOutOfStock = product.stock === 0;
 
   return (
     <div className="container mx-auto h-full px-4 sm:px-0 py-10">
@@ -64,13 +67,13 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
           showIndicators={false}
           renderThumbs={() => product.images.map((img, idx) => (
             <div key={idx} className="w-full h-10 relative">
-              <Image src={img} layout="fill" objectFit="cover" alt="product thumb"></Image>
+              <Image src={img} layout="fill" objectFit="cover" alt={`Thumbnail ${idx + 1}`}></Image>
             </div>
           ))
           }
         >
           {product.images.map((image, index) => (
-            <Image src={image} key={index} alt={`Product image ${index + 1}`} width={500} height={500} style={{ maxHeight: '50vh', objectFit: 'contain' }} />
+            <Image src={image} key={index} alt={`Product image ${index + 1}`} width={500} height={500} className="object-contain max-h-[50vh] w-full" />
           ))}
         </Carousel>
         <div className="space-y-4">
@@ -89,30 +92,30 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h2 className="text-5xl">{product.name}</h2>
+          <h2 className="text-4xl font-semi-bold">{product.name}</h2>
           <div className="flex items-center gap-4">
-            <h4 className="text-3xl">${product.price.toFixed(2)}</h4>
+            <h4 className="text-3xl font-bold">${product.price.toFixed(2)}</h4>
             <p className="text-sm text-muted-foreground">{product.orderCount} sold</p>
           </div>
           <div>
             Stock:
-            <span className={product.stock === 0 ? "text-red-500" : "text-green-500"}>
-              {product.stock === 0 ? " Out of stock" : ` ${product.stock} in stock`}
+            <span className={isOutOfStock ? "text-red-500" : "text-green-500 font-medium"}>
+              {isOutOfStock ? " Out of stock" : ` ${product.stock} in stock`}
             </span>
           </div>
-          <p>{product.description}</p>
+          <p className="text-muted-foreground">{product.description}</p>
           <QuantityField quantity={quantity} max={product.stock} setQuantity={setQuantity} />
           <div className="flex gap-3 my-4">
             <Button
               variant="outline"
               onClick={() => addToCart(product.id, quantity)}
-              disabled={product.stock === 0}
+              disabled={isOutOfStock}
             >
               Add To Cart <ShoppingCart />
             </Button>
             <Button
               onClick={() => router.push(`/checkout?productId=${product.id}&quantity=${quantity}`)}
-              disabled={product.stock === 0}
+              disabled={isOutOfStock}
             >
               Buy Now <ArrowRight />
             </Button>
