@@ -77,7 +77,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                             >
                               {product.name}
                             </h2>
-                            <p className="text-sm text-muted-foreground">Price: {product.price.toFixed(2)} LKR</p>
+                            <p className="text-sm text-muted-foreground">Price: ${product.price.toFixed(2)}</p>
                           </div>
                           <Button
                             variant="ghost" size="icon"
@@ -92,7 +92,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                             setQuantity={(q: number) => { updateQuantity(product.id, q); fetchCartProducts() }}
                           />
                           <p className="font-semibold">
-                            {(product.price * item.quantity).toFixed(2)} LKR
+                            ${(product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </CardContent>
@@ -115,7 +115,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
             <div className="w-full space-y-3">
               <div className="flex justify-between">
                 <p className="font-medium">Subtotal</p>
-                <p className="font-bold">{getSubTotal().toFixed(2)} LKR</p>
+                <p className="font-bold">${getSubTotal().toFixed(2)}</p>
               </div>
               <p className="text-xs text-muted-foreground"> Shipping costs calculated during checkout. </p>
               <div className="flex justify-between gap-2">
