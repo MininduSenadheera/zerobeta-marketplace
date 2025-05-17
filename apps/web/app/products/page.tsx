@@ -16,7 +16,6 @@ export default function Products() {
     setIsLoading(true)
     try {
       //TODO: Fetch products from server
-      setProducts([])
     } catch (error) {
       console.error('Error fetching products:', error)
     } finally {
@@ -44,7 +43,7 @@ export default function Products() {
   }
 
   return (
-    <div className="px-4 sm:px-10 py-10">
+    <div className="container mx-auto h-full px-4 sm:px-0 py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product, index) => (
           <ProductCard key={index} product={product} />
