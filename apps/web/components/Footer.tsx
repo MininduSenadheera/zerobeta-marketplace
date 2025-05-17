@@ -5,8 +5,12 @@ import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { Facebook, Instagram, Youtube } from 'lucide-react'
 import Link from 'next/link'
+import { getNavLinks } from '@/Helpers/Utils'
+import { useContext } from 'react'
+import { AuthContext } from '@/context/AuthContext'
 
 function Footer() {
+  const { user } = useContext(AuthContext)
   const router = useRouter()
 
   return (
@@ -17,9 +21,9 @@ function Footer() {
           <p>150 King Street West, Suite #215,<br /> Toronto, ON M5H 1J9</p>
         </div>
         <div className='space-y-4 flex flex-col mb-4 items-center'>
-          <Link href="/">Home</Link>
-          <Link href='/products'>Products</Link>
-          <Link href='/about'>About</Link>
+          {getNavLinks(user?.userRole as string).map((link, index) => (
+            <Link key={index} href={link.path}>{link.label}</Link>
+          ))}
         </div>
         <div className='space-y-4 text-center sm:text-right'>
           <a href='mailto:minindusenadheera@gmail.com'>minindusenadheera@gmail.com</a>
