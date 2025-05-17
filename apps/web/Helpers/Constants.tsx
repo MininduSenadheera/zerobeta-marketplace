@@ -1,4 +1,4 @@
-export const shippingCost = 250
+export const shippingCost = 1.99
 
 export const navLinks = [
   { path: '/', label: 'Home', sellerOnly: false, buyerOnly: false },
