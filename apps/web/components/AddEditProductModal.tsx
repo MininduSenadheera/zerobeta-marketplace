@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactDragListView from 'react-drag-listview';
 import { IProduct } from '@/Helpers/Interfaces';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
@@ -32,19 +32,22 @@ function AddEditProductModal(props: AddEditProductModalProps) {
   // TODO: Add support for adding images from multiple domains or else use standard image tag
 
   useEffect(() => {
-    if (props.selectedProduct) {
-      const { code, name, description, price, stock, images } = props.selectedProduct;
-      setFormData({ code, name, description, price, stock });
-      setImages(images);
-    } else {
-      clearFields();
+    if (props.open) {
+      if (props.selectedProduct) {
+        const { code, name, description, price, stock, images } = props.selectedProduct;
+        setFormData({ code, name, description, price, stock });
+        setImages(images);
+      } else {
+        clearFields();
+      }
     }
-  }, [props.selectedProduct]);
+  }, [props.open, props.selectedProduct]);
 
-  function closeModal() {
+  const closeModal = useCallback(() => {
     clearFields();
     props.onClose();
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.onClose]);
 
   function clearFields() {
     setFormData({
@@ -67,10 +70,11 @@ function AddEditProductModal(props: AddEditProductModalProps) {
 
   const handleImageAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const imageUrl = (e.target as HTMLFormElement).image_url.value;
+    const form = e.target as HTMLFormElement;
+    const imageUrl = form.image_url.value.trim();
     if (imageUrl) {
       setImages((prev) => [...prev, imageUrl]);
-      (e.target as HTMLFormElement).reset();
+      form.reset();
     }
   }
 
