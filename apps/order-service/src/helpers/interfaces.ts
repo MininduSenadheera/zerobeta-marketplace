@@ -10,6 +10,7 @@ export interface IProduct {
   stock: number
   orderCount: number
   isDeleted: boolean
+  seller: IUser
 }
 
 export interface IOrder {
@@ -38,7 +39,7 @@ export interface IUser {
   email: string
   firstname: string
   lastname: string
-  country: string
+  country?: string
   userRole: UserRoleTypes
 }
 
