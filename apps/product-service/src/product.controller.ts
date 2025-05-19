@@ -9,11 +9,22 @@ import { updateStockDto } from './dto/update-stock.dto';
 export class ProductController {
   constructor(private service: ProductService) { }
 
-  @EventPattern('product.stock.update')
-  handleStockUpdate(@Payload() body: updateStockDto) {
-    return this.service.updateStock(body);
+  @EventPattern('product.stock.orderCount.update')
+  updateStockOrderCountUpdate(@Payload() body: updateStockDto) {
+    return this.service.updateStockOrderCountUpdate(body);
   }
 
+  @EventPattern('product.ids.by.seller')
+  findProductIdsBySeller(@Payload() body: { sellerId: string }) {
+    return this.service.findProductIdsBySeller(body.sellerId);
+  }
+
+  @EventPattern('product.get.details.bulk')
+  findBulkProductDetails(@Payload() body: { productIds: string[] }) {
+    return this.service.findBulkProductDetails(body.productIds);
+  }
+
+  // TODO: should be seller validated
   @Post()
   create(@Body() body: CreateProductDto) {
     return this.service.create(body);
@@ -29,16 +40,19 @@ export class ProductController {
     return this.service.findAll();
   }
 
+  // TODO: should be seller validated
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: UpdateProductDto) {
     return this.service.update(id, body);
   }
 
+  // TODO: should be seller validated
   @Patch(':id/delete')
   softDelete(@Param('id') id: string) {
     return this.service.softDelete(id);
   }
 
+  // TODO: should be seller validated
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.service.delete(id);
