@@ -6,6 +6,7 @@ import { ProductController } from './product.controller';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'ioredis';
 import { RedisService } from './redis/redis.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -23,6 +24,21 @@ import { RedisService } from './redis/redis.service';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ClientsModule.register([
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'product-service-user-client',
+            brokers: [process.env.KAFKA_BROKER || 'kafka:9092'],
+          },
+          consumer: {
+            groupId: 'product-service-user-consumer',
+          },
+        },
+      },
+    ]),
   ],
   controllers: [ProductController],
   providers: [ProductService, RedisService],
