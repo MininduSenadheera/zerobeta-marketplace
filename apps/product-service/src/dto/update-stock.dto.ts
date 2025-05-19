@@ -16,7 +16,7 @@ export class updateStockDto {
   @IsString()
   type: 'decrease' | 'increase';
 
-  @ApiProperty()
+  @ApiProperty({ type: [ProductQuantityDto] })
   @IsArray()
   items: ProductQuantityDto[];
 }

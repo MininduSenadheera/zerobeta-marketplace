@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './product.entity';
+import { Product } from './entities/product.entity';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -27,4 +27,4 @@ import { RedisService } from './redis/redis.service';
   controllers: [ProductController],
   providers: [ProductService, RedisService],
 })
-export class ProductModule {}
+export class ProductModule { }
