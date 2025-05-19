@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { RedisService } from './redis/redis.service';
 import { CreateProductDto } from './dto/create.dto';
 import { UpdateProductDto } from './dto/update.dto';
+import { updateStockDto } from './dto/update-stock.dto';
 
 @Injectable()
 export class ProductService {
@@ -49,5 +50,30 @@ export class ProductService {
   async delete(id: string) {
     await this.redis.del(`product:${id}`);
     return this.repo.delete(id);
+  }
+
+  async updateStock(body: updateStockDto) {
+    const { items, type } = body;
+
+    for (const item of items) {
+      const { productId, quantity } = item;
+
+      const product = await this.repo.findOne({ where: { id: productId } });
+      if (!product) {
+        throw new Error(`Product with ID ${productId} not found`);
+      }
+
+      if (type === 'increase') {
+        product.stock += quantity;
+      } else if (type === 'decrease') {
+        if (product.stock < quantity) {
+          throw new Error(`Insufficient stock for product ID ${productId}`);
+        }
+        product.stock -= quantity;
+      }
+
+      await this.redis.del(`product:${productId}`);
+      await this.repo.update(productId, product);
+    }
   }
 }

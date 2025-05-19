@@ -2,10 +2,17 @@ import { Controller, Post, Body, Get, Patch, Param, Delete } from '@nestjs/commo
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create.dto';
 import { UpdateProductDto } from './dto/update.dto';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { updateStockDto } from './dto/update-stock.dto';
 
 @Controller('products')
 export class ProductController {
   constructor(private service: ProductService) { }
+
+  @EventPattern('product.stock.update')
+  handleStockUpdate(@Payload() body: updateStockDto) {
+    return this.service.updateStock(body);
+  }
 
   @Post()
   create(@Body() body: CreateProductDto) {
