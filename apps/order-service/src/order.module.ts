@@ -5,6 +5,7 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { OrderItem } from './entities/order-item.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
     ]),
+    ScheduleModule.forRoot(),
   ],
   controllers: [OrderController],
   providers: [OrderService],

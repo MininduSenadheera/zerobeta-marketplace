@@ -8,6 +8,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { CreateOrderDto } from './dto/create.dto';
 import { IProduct, IUser } from './helpers/interfaces';
 import { KafkaEventService } from './kafka/kafka.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class OrderService {
@@ -160,6 +161,7 @@ export class OrderService {
     return order;
   }
 
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async updatePendingOrdersToCompleted() {
     const pendingOrders = await this.orderRepo.find({ where: { status: OrderStatusTypes.Pending } });
 
