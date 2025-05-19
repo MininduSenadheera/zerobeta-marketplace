@@ -1,0 +1,31 @@
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  code: string;
+
+  @Column({ unique: true })
+  name: string;
+
+  @Column({ length: 100 })
+  description: string;
+
+  @Column("text", { array: true })
+  images: string[];
+
+  @Column()
+  price: number;
+
+  @Column()
+  stock: number;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @Column({ type: 'uuid' })
+  sellerId: string;
+}
