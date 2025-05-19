@@ -16,7 +16,7 @@ export class KafkaEventService {
   }
 
   notifyStockAndOrderCountUpdate({ type, items }: IStockUpdatePayload) {
-    this.productClient.emit<IStockUpdatePayload>('product.stock.update', {
+    this.productClient.emit<IStockUpdatePayload>('product.stock.orderCount.update', {
       type,
       items,
     });
