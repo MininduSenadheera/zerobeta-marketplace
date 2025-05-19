@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { OrderStatusTypes, ShippingMethodTypes } from "./order.enums";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OrderStatusTypes, ShippingMethodTypes } from "../enums/order.enums";
+import { OrderItem } from "./order-item.entity";
 
 @Entity()
 export class Order {
@@ -20,4 +21,7 @@ export class Order {
 
   @Column({ type: 'uuid' })
   buyerId: string;
+
+  @OneToMany(() => OrderItem, item => item.order, { cascade: true })
+  items: OrderItem[];
 }
