@@ -22,7 +22,7 @@ export class OrderService {
     const productsMap = new Map(products.map(p => [p.id, p]));
     const buyersMap = new Map(buyers.map(u => [u.id, u]));
 
-    return orders.map(order => ({
+    const enhanced = orders.map(order => ({
       ...order,
       items: order.items.map(item => ({
         ...item,
@@ -30,6 +30,11 @@ export class OrderService {
       })),
       buyer: buyersMap.get(order.buyerId),
       totalPrice: order.items.reduce((total, item) => total + item.unitPrice * item.quantity, 0)
+    }));
+
+    return enhanced.map(order => ({
+      ...order,
+      items: order.items.filter(item => item.product),
     }));
   }
 

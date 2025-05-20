@@ -10,6 +10,15 @@ export class Order {
   @Column({ unique: true })
   referenceNo: string;
 
+  @Column('text')
+  address: string;
+
+  @Column('text')
+  city: string;
+
+  @Column('text')
+  country: string;
+
   @Column({ type: 'enum', enum: ShippingMethodTypes })
   shipping: ShippingMethodTypes;
 

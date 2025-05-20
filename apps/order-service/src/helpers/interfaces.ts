@@ -1,4 +1,4 @@
-import { OrderStatusTypes, ShippingMethodTypes, UserRoleTypes } from "./types"
+import { UserRoleTypes } from "./types"
 
 export interface IProduct {
   id: string
@@ -11,27 +11,6 @@ export interface IProduct {
   orderCount: number
   isDeleted: boolean
   seller: IUser
-}
-
-export interface IOrder {
-  id: string
-  email: string
-  firstname: string
-  lastname: string
-  mobile: string
-  address: string
-  city: string
-  country: string
-  products: {
-    product: IProduct,
-    quantity: number
-    unitPrice: number
-  }[]
-  shippingMethod: ShippingMethodTypes
-  shippingCost: number
-  totalPrice: number
-  date: Date
-  status: OrderStatusTypes
 }
 
 export interface IUser {
