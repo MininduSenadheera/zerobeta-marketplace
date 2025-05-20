@@ -25,35 +25,35 @@ export class ProductController {
   }
 
   // TODO: should be seller validated
-  @Post()
+  @Post('create')
   create(@Body() body: CreateProductDto) {
     return this.service.create(body);
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.service.findAll();
   }
 
   // TODO: should be seller validated
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() body: UpdateProductDto) {
     return this.service.update(id, body);
   }
 
   // TODO: should be seller validated
-  @Patch(':id/delete')
+  @Patch('hide/:id')
   softDelete(@Param('id') id: string) {
     return this.service.softDelete(id);
   }
 
   // TODO: should be seller validated
-  @Delete(':id')
+  @Delete('delete/:id')
   delete(@Param('id') id: string) {
     return this.service.delete(id);
   }
