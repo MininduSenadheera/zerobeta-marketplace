@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Providers } from "./providers";
 import SideBar from "@/components/SideBar";
 import { Toaster } from "sonner";
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <Providers>
           <SideBar />
           <div className="flex flex-col h-100dvh w-full">
             <Navbar />
@@ -23,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </div>
             <Footer />
           </div>
+        </Providers>
       </body>
     </html>
   );
