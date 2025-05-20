@@ -18,6 +18,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import axios from 'axios';
+import config from '@/Helpers/config';
 
 function Product({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = use(params);
@@ -33,8 +35,8 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-
-        // TODO: Replace with your real API endpoint
+        const response = await axios.get<IProduct>(config.apiUrl + 'products/by-id' + productId) 
+        setProduct(response.data)
       } catch (error) {
         console.error("Failed to fetch product:", error);
       } finally {

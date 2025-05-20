@@ -3,6 +3,8 @@ import ProductCard from "@/components/ProductCard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { IProduct } from "@/Helpers/Interfaces"
 import { useEffect, useState } from "react"
+import axios from "axios"
+import config from "@/Helpers/config"
 
 export default function Products() {
   const [products, setProducts] = useState<IProduct[]>([])
@@ -12,7 +14,8 @@ export default function Products() {
     const fetchProducts = async () => {
       setIsLoading(true)
       try {
-        //TODO: Fetch products from server
+        const response = await axios.get<IProduct[]>(config.apiUrl + 'products/all')
+        setProducts(response.data)
       } catch (error) {
         console.error('Error fetching products:', error)
       } finally {
