@@ -1,11 +1,11 @@
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreateTempUserDto } from './dto/create-temp-user.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -28,11 +28,18 @@ export class UserController {
 
   @Post('login')
   login(@Body() body: LoginDto) {
-    return this.service.validateCredentials(body);
+    return this.service.login(body);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
+  @Post('validate-token')
+  validateToken(@Req() req) {
+    return req.user;
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('me/:id')
   findById(@Param('id') id: string) {
     return this.service.findById(id);

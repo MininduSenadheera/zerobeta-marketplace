@@ -37,7 +37,7 @@ export class UserService {
       expiresIn: process.env.JWT_EXPIRATION_TIME,
     });
 
-    return access_token;
+    return {token: access_token, user: payload};
   }
 
   async create(user: CreateUserDto) {
@@ -75,7 +75,7 @@ export class UserService {
     return this.buildToken(savedUser);
   }
 
-  async validateCredentials(dto: LoginDto) {
+  async login(dto: LoginDto) {
     const user = await this.repo.findOne({ where: { email: dto.email } });
 
     if (!user) throw new NotFoundException('User not found');
