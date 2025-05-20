@@ -1,6 +1,6 @@
 "use client";
 import { ICartItem } from '@/Helpers/Interfaces';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
 interface CartContextProps {
   cart: ICartItem[];
@@ -22,53 +22,55 @@ export const CartContextProvider = ({ children }: { children: React.ReactNode })
   const [cart, setCart] = useState<ICartItem[]>([]);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem('cart') || '[]';
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
+    try {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      }
+    } catch (error) {
+      console.error('Failed to parse cart from localStorage:', error);
     }
   }, []);
 
-  const syncCartToLocalStorage = (updatedCart: ICartItem[]) => {
+  const syncCartToLocalStorage = useCallback((updatedCart: ICartItem[]) => {
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
+  }, []);
 
-  const addToCart = (productId: ICartItem['productId'], quantity: ICartItem['quantity']) => {
-    const updatedCart = [...cart];
-    const itemIndex = updatedCart.findIndex((item) => item.productId === productId);
+  const addToCart = useCallback(
+    (productId: ICartItem['productId'], quantity: ICartItem['quantity']) => {
+      const updatedCart = cart.some(item => item.productId === productId)
+        ? cart.map(item =>
+          item.productId === productId ? { ...item, quantity } : item
+        )
+        : [...cart, { productId, quantity }];
 
-    if (itemIndex !== -1) {
-      if (updatedCart[itemIndex]) {
-        updatedCart[itemIndex].quantity = quantity;
-      }
-    } else {
-      updatedCart.push({ productId, quantity });
-    }
+      syncCartToLocalStorage(updatedCart);
+    },
+    [cart, syncCartToLocalStorage]
+  );
 
-    syncCartToLocalStorage(updatedCart);
-  };
-
-  const removeFromCart = (productId: ICartItem['productId']) => {
-    const updatedCart = cart.filter((item) => item.productId !== productId);
-    syncCartToLocalStorage(updatedCart);
-  };
+  const removeFromCart = useCallback(
+    (productId: ICartItem['productId']) => {
+      const updatedCart = cart.filter(item => item.productId !== productId);
+      syncCartToLocalStorage(updatedCart);
+    },
+    [cart, syncCartToLocalStorage]
+  );
 
   const clearCart = () => {
     syncCartToLocalStorage([]);
   };
 
-  const updateQuantity = (productId: ICartItem['productId'], quantity: ICartItem['quantity']) => {
-    const updatedCart = [...cart];
-    const itemIndex = updatedCart.findIndex((item) => item.productId === productId);
-
-    if (itemIndex !== -1) {
-      if (updatedCart[itemIndex]) {
-        updatedCart[itemIndex].quantity = quantity;
-      }
-    }
-
-    syncCartToLocalStorage(updatedCart);
-  };
+  const updateQuantity = useCallback(
+    (productId: ICartItem['productId'], quantity: ICartItem['quantity']) => {
+      const updatedCart = cart.map(item =>
+        item.productId === productId ? { ...item, quantity } : item
+      );
+      syncCartToLocalStorage(updatedCart);
+    },
+    [cart, syncCartToLocalStorage]
+  );
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}>
