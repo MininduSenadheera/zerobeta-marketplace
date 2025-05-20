@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import QuantityField from './QuantityField'
 import { Skeleton } from './ui/skeleton'
+import config from '@/Helpers/config'
+import axios from 'axios'
 
 function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunction }) {
   const router = useRouter()
@@ -21,7 +23,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
   useEffect(() => {
     if (!props.isCartOpen) return
     fetchCartProducts()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isCartOpen])
 
   const fetchCartProducts = async () => {
@@ -33,7 +35,10 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
         setCartItems([])
         return
       }
-      // TODO: Fetch products by IDs from server
+      const response = await axios.post<IProduct[]>(config.apiUrl + 'products/by-ids', {
+        productIds: ids
+      })
+      setProducts(response.data)
       setCartItems(cart)
     } catch (error) {
       console.log('Error getting products: ', error)
@@ -57,15 +62,15 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
         </SheetHeader>
         {isLoading ? (
           <div className="grid grid-cols-1 gap-4 px-4">
-            {Array(3).fill(null).map((_,index) => (
+            {Array(3).fill(null).map((_, index) => (
               <Skeleton key={index} className="h-[100px] w-full rounded-xl" />
             ))}
           </div>
         ) : (
           <div className="grow-1 overflow-y-auto px-4">
-              {cartItems.length > 0 ? (
+            {cartItems.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
-                  {cartItems.map((item, index) => {
+                {cartItems.map((item, index) => {
                   const product = products.find(p => p.id === item.productId) as IProduct
                   return (
                     <Card key={index} className="border rounded-md">
