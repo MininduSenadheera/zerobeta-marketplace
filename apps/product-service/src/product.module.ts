@@ -7,6 +7,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'ioredis';
 import { RedisService } from './redis/redis.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { KafkaEventService } from './kafka/kafka.service';
 
 @Module({
   imports: [
@@ -41,6 +42,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [ProductController],
-  providers: [ProductService, RedisService],
+  providers: [ProductService, RedisService, KafkaEventService],
 })
 export class ProductModule { }
