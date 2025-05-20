@@ -5,6 +5,14 @@ import { OrderModule } from './order.module';
 async function bootstrap() {
   const app = await NestFactory.create(OrderModule);
 
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Authorization'],
+    credentials: true
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('Order Service API')
     .setDescription('API docs for orders microservice')

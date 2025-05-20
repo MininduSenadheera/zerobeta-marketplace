@@ -1,20 +1,20 @@
 import { NestFactory } from '@nestjs/core';
-import { ProductModule } from './product.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
+import { UserModule } from './user.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ProductModule);
+  const app = await NestFactory.create(UserModule);
 
   app.connectMicroservice({
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'product-service-order-client',
+        clientId: 'user-service-client',
         brokers: [process.env.KAFKA_BROKER || 'kafka:9092'],
       },
       consumer: {
-        groupId: 'product-service-order-consumer',
+        groupId: 'user-service-consumer',
       },
       retry: {
         retries: 10,
@@ -32,8 +32,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Product Service API')
-    .setDescription('API docs for products micro service')
+    .setTitle('User Service API')
+    .setDescription('API docs for users micro service')
     .setVersion('1.0')
     .build();
 
