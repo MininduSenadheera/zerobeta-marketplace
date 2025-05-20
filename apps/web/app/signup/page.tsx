@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AlertCircle, Loader2 } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import axios from "axios"
+import config from "@/Helpers/config"
+import { toast } from "sonner"
 
 export default function Signup() {
   const router = useRouter()
@@ -45,11 +48,16 @@ export default function Signup() {
     }
 
     try {
-      //TODO: Replace with actual API call
+      await axios.post(config.apiUrl + 'users/register', { ...formData })
+      toast.success("Account created successfully! Please sign in.")
       router.push("/signin")
     } catch (error) {
       console.error(error)
-      setError("An error occurred while creating your account. Please try again.")
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        setError(error.response.data.message)
+      } else {
+        setError("An error occurred while sign up. Please try again.")
+      }
     } finally {
       setIsLoading(false)
     }
@@ -60,7 +68,7 @@ export default function Signup() {
       <div className="hidden bg-muted md:block md:w-1/2">
         <div className="relative h-full w-full">
           <Image
-            src="/images/login-background.jpg"
+            src="/images/AuthBg.png"
             alt="Login illustration" fill priority
             className="object-cover"
           />
@@ -118,7 +126,6 @@ export default function Signup() {
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
