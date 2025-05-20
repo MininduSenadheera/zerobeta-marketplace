@@ -40,6 +40,11 @@ export class ProductController {
     return this.service.findAll();
   }
 
+  @Post('by-ids')
+  findBulkProductDetailsHttp(@Body() body: { productIds: string[] }) {
+    return this.service.findBulkProductDetails(body.productIds);
+  }
+
   // TODO: should be seller validated
   @Patch('update/:id')
   update(@Param('id') id: string, @Body() body: UpdateProductDto) {
