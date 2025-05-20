@@ -77,7 +77,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                       <CardContent className="space-y-4">
                         <div className="flex justify-between items-start gap-4">
                           <Image
-                            src={product.images[0] as string} alt={product.name} width={64} height={64}
+                            src='/images/product.png' alt={product.name} width={64} height={64}
                             className="w-16 h-16 object-cover rounded"
                           />
                           <div className="flex-1 space-y-1">

@@ -67,15 +67,15 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
           showStatus={false}
           swipeable={true}
           showIndicators={false}
-          renderThumbs={() => product.images.map((img, idx) => (
-            <div key={idx} className="w-full h-10 relative">
-              <Image src={img} layout="fill" objectFit="cover" alt={`Thumbnail ${idx + 1}`}></Image>
+          renderThumbs={() => Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="w-full h-10 relative">
+              <Image src='/images/product.png' layout="fill" objectFit="cover" alt={`Thumbnail ${index + 1}`}></Image>
             </div>
           ))
           }
         >
-          {product.images.map((image, index) => (
-            <Image src={image} key={index} alt={`Product image ${index + 1}`} width={500} height={500} className="object-contain max-h-[50vh] w-full" />
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Image src='/images/product.png' key={index} alt={`Product image ${index + 1}`} width={500} height={500} className="object-contain max-h-[50vh] w-full" />
           ))}
         </Carousel>
         <div className="space-y-4">

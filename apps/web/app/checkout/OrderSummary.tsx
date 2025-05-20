@@ -30,7 +30,7 @@ function OrderSummary({ productsAndQuantities, shipping }: OrderSummaryProps) {
               <Card key={index}>
                 <CardContent className='flex justify-between items-start gap-3'>
                   <Image
-                    src={product.images[0] as string} alt={product.name} width={64} height={64}
+                    src='/images/product.png' alt={product.name} width={64} height={64}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className='text-start grow-1'>

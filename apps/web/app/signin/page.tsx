@@ -36,7 +36,7 @@ export default function Signin() {
 
     try {
       const response = await axios.post(config.apiUrl + 'users/login', { ...formData })
-      login(response.data.token)
+      login(response.data.token, response.data.user)
       router.push("/")
     } catch (error) {
       console.error(error)

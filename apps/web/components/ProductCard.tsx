@@ -11,7 +11,7 @@ function ProductCard({ product }: { product: IProduct }) {
     <Card className="p-0 cursor-pointer overflow-hidden rounded-xl hover:shadow-lg transition-shadow">
       <CardAction onClick={() => router.push(`/products/${product.id}`)}>
         <Image
-          src={product.images[0] as string} alt={product.name}
+          src='/images/product.png' alt={product.name}
           width={400} height={300} priority
           className="w-full h-60 object-cover rounded-t-xl"
         />
