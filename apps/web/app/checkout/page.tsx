@@ -12,10 +12,14 @@ import { ICartItem, IProduct } from '@/Helpers/Interfaces'
 import { shippingCost } from '@/Helpers/Constants'
 import { OrderStatusTypes, ShippingMethodTypes } from '@/Helpers/Types'
 import OrderSummary from './OrderSummary'
+import { AuthContext } from '@/context/AuthContext'
+import axios from 'axios'
+import config from '@/Helpers/config'
 
 function Checkout() {
   const router = useRouter()
-  const { clearCart } = useContext(CartContext)
+  const { user } = useContext(AuthContext)
+  const { cart, clearCart } = useContext(CartContext)
   const searchParams = useSearchParams();
   const productId = searchParams.get('productId');
   const quantity = searchParams.get('quantity') ? parseInt(searchParams.get('quantity') as string) : 1;
@@ -37,8 +41,8 @@ function Checkout() {
   useEffect(() => {
     if (productId !== null) {
       fetchProducts([{ productId, quantity }])
-    } else if (localStorage.getItem('cart') !== null && JSON.parse(localStorage.getItem('cart') || '[]').length > 0) {
-      fetchProducts(JSON.parse(localStorage.getItem('cart') || '[]'))
+    } else if (cart.length > 0) {
+      fetchProducts(cart)
     } else {
       router.back()
     }
@@ -54,7 +58,10 @@ function Checkout() {
         setProductQuantities([])
         return
       }
-      // TODO: get products by ids from server
+      const response = await axios.post<IProduct[]>(config.apiUrl + 'products/by-ids', {
+        productIds: ids
+      })
+      setProducts(response.data)
       setProductQuantities(productList)
     } catch (error) {
       console.log('Error getting documents: ', error)
@@ -92,32 +99,26 @@ function Checkout() {
 
     const { email, firstname, lastname, address, city, country, shipping } = formData
 
-    const subTotal = productsAndQuantities.reduce((acc, item) => {
-      const product = item as IProduct
-      return acc + (product.price * (item.quantity || 1))
-    }, 0)
-
     const order = {
+      userId: user?.id || '',
       email,
       firstname,
       lastname,
       address,
       city,
       country,
-      products: [
+      productQuantities: [
         ...productsAndQuantities.map((item) => {
           const product = item as IProduct
           return {
             productId: product.id,
-            price: product.price,
+            unitPrice: product.price,
             quantity: item.quantity
           }
         })
       ],
       shipping,
       shippingCost: shipping === "Delivery" ? shippingCost : 0,
-      totalPrice: (subTotal + (shipping === "Delivery" ? shippingCost : 0)),
-      date: new Date(),
       status: 'Pending' as OrderStatusTypes,
     }
 
