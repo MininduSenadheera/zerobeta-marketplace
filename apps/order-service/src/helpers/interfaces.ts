@@ -11,6 +11,8 @@ export interface IProduct {
   orderCount: number
   isDeleted: boolean
   seller: IUser
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface IUser {

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OrderStatusTypes, ShippingMethodTypes } from "../enums/order.enums";
 import { OrderItem } from "./order-item.entity";
 
@@ -33,4 +33,10 @@ export class Order {
 
   @OneToMany(() => OrderItem, item => item.order, { cascade: true })
   items: OrderItem[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
