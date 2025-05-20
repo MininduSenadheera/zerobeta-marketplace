@@ -7,13 +7,13 @@ export class OrderController {
   constructor(private readonly service: OrderService) { }
 
   // TODO: should be buyer validated
-  @Post()
+  @Post('create')
   async create(@Body() body: CreateOrderDto) {
     return this.service.createOrder(body);
   }
 
   // TODO: should be buyer or seller validated
-  @Get(':id')
+  @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
