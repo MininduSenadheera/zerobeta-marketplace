@@ -1,5 +1,5 @@
 "use client"
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Button } from './ui/button'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from './ui/sheet'
 import { Trash } from 'lucide-react'
@@ -13,27 +13,28 @@ import { Skeleton } from './ui/skeleton'
 
 function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunction }) {
   const router = useRouter()
-  const { clearCart, removeFromCart, updateQuantity } = useContext(CartContext)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { cart, clearCart, removeFromCart, updateQuantity } = useContext(CartContext)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [products, setProducts] = useState<IProduct[]>([])
-  const [productQuantities, setProductQuantities] = useState<ICartItem[]>([])
+  const [cartItems, setCartItems] = useState<ICartItem[]>([])
 
   useEffect(() => {
     if (!props.isCartOpen) return
     fetchCartProducts()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isCartOpen])
 
   const fetchCartProducts = async () => {
     try {
       setIsLoading(true)
-      const ids = JSON.parse(localStorage.getItem('cart') || '[]').map((item: ICartItem) => item.productId)
+      const ids = cart.map(item => item.productId);
       if (ids.length === 0) {
         setProducts([])
-        setProductQuantities([])
+        setCartItems([])
         return
       }
       // TODO: Fetch products by IDs from server
-      setProductQuantities(JSON.parse(localStorage.getItem('cart') || '[]'))
+      setCartItems(cart)
     } catch (error) {
       console.log('Error getting products: ', error)
     } finally {
@@ -41,12 +42,12 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
     }
   }
 
-  const getSubTotal = () => {
-    return productQuantities.reduce((acc, item) => {
-      const product = products.find(product => product.id === item.productId)
-      return acc + (product?.price || 0) * item.quantity
-    }, 0)
-  }
+  const subTotal = useMemo(() => {
+    return cartItems.reduce((acc, item) => {
+      const product = products.find(product => product.id === item.productId);
+      return acc + (product?.price || 0) * item.quantity;
+    }, 0);
+  }, [cartItems, products]);
 
   return (
     <Sheet open={props.isCartOpen} onOpenChange={() => props.setIsCartOpen(!props.isCartOpen)}>
@@ -56,15 +57,15 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
         </SheetHeader>
         {isLoading ? (
           <div className="grid grid-cols-1 gap-4 px-4">
-            {[1, 2, 3].map((index) => (
+            {Array(3).fill(null).map((_,index) => (
               <Skeleton key={index} className="h-[100px] w-full rounded-xl" />
             ))}
           </div>
         ) : (
           <div className="grow-1 overflow-y-auto px-4">
-            {productQuantities.length > 0 ? (
+              {cartItems.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
-                {productQuantities.map((item, index) => {
+                  {cartItems.map((item, index) => {
                   const product = products.find(p => p.id === item.productId) as IProduct
                   return (
                     <Card key={index} className="border rounded-md">
@@ -85,7 +86,10 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                           </div>
                           <Button
                             variant="ghost" size="icon"
-                            onClick={() => { removeFromCart(product.id); fetchCartProducts() }}
+                            onClick={() => {
+                              removeFromCart(product.id);
+                              setCartItems(cart.filter(c => c.productId !== product.id));
+                            }}
                           >
                             <Trash />
                           </Button>
@@ -93,7 +97,14 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                         <div className="flex justify-between items-center">
                           <QuantityField
                             quantity={item.quantity} max={product.stock}
-                            setQuantity={(q: number) => { updateQuantity(product.id, q); fetchCartProducts() }}
+                            setQuantity={(q: number) => {
+                              updateQuantity(product.id, q);
+                              setCartItems(prev =>
+                                prev.map(item =>
+                                  item.productId === product.id ? { ...item, quantity: q } : item
+                                )
+                              );
+                            }}
                           />
                           <p className="font-semibold">
                             ${(product.price * item.quantity).toFixed(2)}
@@ -115,11 +126,11 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
           </div>
         )}
         <SheetFooter className='p-5 border-t'>
-          {productQuantities.length > 0 ? (
+          {cartItems.length > 0 ? (
             <div className="w-full space-y-3">
               <div className="flex justify-between">
                 <p className="font-medium">Subtotal</p>
-                <p className="font-bold">${getSubTotal().toFixed(2)}</p>
+                <p className="font-bold">${subTotal.toFixed(2)}</p>
               </div>
               <p className="text-xs text-muted-foreground"> Shipping costs calculated during checkout. </p>
               <div className="flex justify-between gap-2">
@@ -139,7 +150,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
               </div>
               <Button
                 variant="ghost" className="w-full text-muted-foreground"
-                onClick={() => { clearCart(); fetchCartProducts() }}
+                onClick={() => { clearCart(); setCartItems([]); }}
               >
                 Clear Cart
               </Button>
