@@ -6,7 +6,7 @@ import { RedisService } from './redis/redis.service';
 import { CreateProductDto } from './dto/create.dto';
 import { UpdateProductDto } from './dto/update.dto';
 import { updateStockDto } from './dto/update-stock.dto';
-import { IProduct, IUser } from './helpers/interfaces';
+import { IProduct } from './helpers/interfaces';
 import { KafkaEventService } from './kafka/kafka.service';
 
 @Injectable()
@@ -28,8 +28,10 @@ export class ProductService {
 
   private async enrichProduct(products: Product[]) {
     const sellerIds = [...new Set(products.map(p => p.sellerId))];
-    const sellers = await this.kafkaService.getSellersData(sellerIds) as IUser[];
+
+    const sellers = await this.kafkaService.getSellersData(sellerIds);
     const sellersMap = new Map(sellers.map(u => [u.id, u]));
+    
     return products.map(product => ({
       ...product,
       seller: sellersMap.get(product.sellerId),
