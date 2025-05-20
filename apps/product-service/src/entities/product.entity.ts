@@ -14,9 +14,6 @@ export class Product {
   @Column({ length: 100 })
   description: string;
 
-  @Column("text", { array: true })
-  images: string[];
-
   @Column()
   price: number;
 
