@@ -1,14 +1,18 @@
 "use client"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AlertCircle, Loader2 } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import config from "@/Helpers/config"
+import axios from "axios"
+import { AuthContext } from "@/context/AuthContext"
 
 export default function Signin() {
+  const { login } = useContext(AuthContext)
   const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
@@ -31,11 +35,16 @@ export default function Signin() {
     setError("")
 
     try {
-      //TODO: Replace with actual API call
+      const response = await axios.post(config.apiUrl + 'users/login', { ...formData })
+      login(response.data.token)
       router.push("/")
     } catch (error) {
       console.error(error)
-      setError("An error occurred while accessing your account. Please try again.")
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        setError(error.response.data.message)
+      } else {
+        setError("An error occurred while logging in. Please try again.")
+      }
     } finally {
       setIsLoading(false)
     }
@@ -46,7 +55,7 @@ export default function Signin() {
       <div className="hidden bg-muted md:block md:w-1/2">
         <div className="relative h-full w-full">
           <Image
-            src="/images/login-background.jpg"
+            src="/images/AuthBg.png"
             alt="Login illustration" fill priority
             className="object-cover"
           />
@@ -63,13 +72,11 @@ export default function Signin() {
             />
             <Input
               id="password" name="password" type="password" placeholder="Password"
-              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
               value={formData.password} onChange={handleChange} required
             />
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
