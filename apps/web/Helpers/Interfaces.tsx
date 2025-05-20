@@ -9,6 +9,7 @@ export interface IProduct {
   description: string
   stock: number
   orderCount: number
+  seller: IUser
   isDeleted: boolean
 }
 
@@ -20,13 +21,10 @@ export interface ICartItem {
 export interface IOrder {
   id: string
   referenceNo: string
-  email: string
-  firstname: string
-  lastname: string
-  mobile: string
   address: string
   city: string
   country: string
+  buyer: IUser
   products: {
     product: IProduct,
     quantity: number
