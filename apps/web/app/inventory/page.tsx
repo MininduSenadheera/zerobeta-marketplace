@@ -21,7 +21,7 @@ function Inventory() {
 
   useEffect(() => {
     fetchProducts()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const fetchProducts = async () => {
@@ -57,8 +57,17 @@ function Inventory() {
       headerName: 'Stock', field: 'stock',
       cellRenderer: (props: { value: number }) => {
         return (
-          <p color={props.value > 10 ? 'success' : 'error'}>
+          <p className={props.value < 10 ? 'text-red-500' : ''}>
             {props.value}
+          </p >
+        )
+      }
+    },
+    {
+      headerName: 'Status', field: 'isDeleted', cellRenderer: (props: { value: boolean }) => {
+        return (
+          <p>
+            {props.value ? 'Deleted' : 'Active'}
           </p >
         )
       }

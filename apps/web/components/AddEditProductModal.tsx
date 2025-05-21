@@ -68,7 +68,7 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     try {
       setIsLoading(true);
       if (props.selectedProduct) {
-        await apiClient.patch(config.apiUrl + 'product/update/' + props.selectedProduct?.id, { ...formData })
+        await apiClient.patch(config.apiUrl + 'products/update/' + props.selectedProduct?.id, { ...formData })
       } else {
         await apiClient.post(config.apiUrl + 'products/create', { ...formData })
       }
@@ -88,9 +88,9 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     try {
       setIsDeleteLoading(true);
       if (props.selectedProduct && props.selectedProduct.orderCount > 0) {
-        await apiClient.patch(config.apiUrl + 'product/hide/' + props.selectedProduct?.id)
+        await apiClient.patch(config.apiUrl + 'products/hide/' + props.selectedProduct?.id)
       } else {
-        await apiClient.delete(config.apiUrl + 'product/delete/' + props.selectedProduct?.id)
+        await apiClient.delete(config.apiUrl + 'products/delete/' + props.selectedProduct?.id)
       }
       toast.success('Product deleted successfully', { description: new Date().toLocaleString() });
       props.reloadProducts();

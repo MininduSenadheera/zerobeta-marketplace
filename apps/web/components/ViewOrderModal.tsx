@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import config from '@/Helpers/config';
 import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 interface ViewOrderModalProps {
   open: boolean;
@@ -23,13 +24,15 @@ function ViewOrderModal(props: ViewOrderModalProps) {
   const handleOrderCancel = async () => {
     setIsLoading(true)
     try {
-      await apiClient.post(config.apiUrl + 'orders/cancel')
+      await apiClient.patch(config.apiUrl + 'orders/cancel/' + props.selectedOrder?.id)
       toast.success('Order cancelled', { description: new Date().toLocaleString() });
       props.reloadOrders();
       props.onClose();
     } catch (error) {
       toast.error('Failed to cancel order', { description: 'An unknown error occurred' });
       console.error('Failed to cancel order', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -79,17 +82,17 @@ function ViewOrderModal(props: ViewOrderModalProps) {
             <div>
               <h3 className="text-lg font-semibold mb-2">Summary</h3>
               <p><strong>Shipping Cost:</strong> ${props.selectedOrder.shippingCost}</p>
-              <p><strong>Total Price:</strong> ${props.selectedOrder.totalPrice.toFixed(2)}</p>
+              <p><strong>Total Price:</strong> ${props.selectedOrder.totalPrice}</p>
             </div>
             <div className='text-right'>
               <h3 className="text-lg font-semibold mb-2">Order Details</h3>
               <p><strong>Date:</strong> {new Date(props.selectedOrder.createdAt).toLocaleDateString()}</p>
-              <p><strong>Status:</strong> {props.selectedOrder.status}</p>
+              <p className={props.selectedOrder.status === 'Pending' ? 'text-yellow-500' : props.selectedOrder.status === 'Completed' ? 'text-green-500' : 'text-red-500'}><strong>Status:</strong> {props.selectedOrder.status}</p>
             </div>
           </div>
         )}
         <DialogFooter className='flex-row justify-between sm:justify-between'>
-          {(props.selectedOrder && props.selectedOrder.status === 'Completed') ? (
+          {(props.selectedOrder && props.selectedOrder.status === 'Pending') ? (
             <Button
               variant="destructive" disabled={isLoading}
               onClick={() => handleOrderCancel()}

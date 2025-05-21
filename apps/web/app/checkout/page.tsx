@@ -128,7 +128,7 @@ function Checkout() {
         })
       ],
       shipping,
-      shippingCost: shipping === "Delivery" ? shippingCost : 0,
+      shippingCost: shipping === "Deliver" ? shippingCost : 0,
       status: 'Pending' as OrderStatusTypes,
     }
 
