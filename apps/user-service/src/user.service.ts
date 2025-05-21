@@ -37,7 +37,7 @@ export class UserService {
       expiresIn: process.env.JWT_EXPIRATION_TIME,
     });
 
-    return {token: access_token, user: payload};
+    return { token: access_token, user: payload };
   }
 
   async create(user: CreateUserDto) {
@@ -115,4 +115,32 @@ export class UserService {
     return newUser.id;
   }
 
+  validateToken(token: string) {
+    try {
+      interface DecodedToken {
+        id: string;
+        firstname: string;
+        lastname: string;
+        email: string;
+        userRole: string;
+        country: string;
+      }
+
+      const decoded = this.jwtService.verify<DecodedToken>(token, {
+        secret: process.env.JWT_SECRET,
+        ignoreExpiration: false,
+      });
+
+      return {
+        id: decoded.id,
+        firstname: decoded.firstname,
+        lastname: decoded.lastname,
+        email: decoded.email,
+        userRole: decoded.userRole,
+        country: decoded.country,
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
 }

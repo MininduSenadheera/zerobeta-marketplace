@@ -21,6 +21,11 @@ export class UserController {
     return await this.service.createTempUser(body);
   }
 
+  @MessagePattern('user.validate.token')
+  validateTokenKafka(@Payload() token: string) {
+    return this.service.validateToken(token);
+  }
+
   @Post('register')
   create(@Body() body: CreateUserDto) {
     return this.service.create(body);
@@ -34,7 +39,7 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('validate-token')
-  validateToken(@Req() req) {
+  validateToken(@Req() req: { user: { id: string, firstname: string, lastname: string, country: string, email: string, userRole: string } }) {
     return req.user;
   }
 
