@@ -6,6 +6,8 @@ import { Loader2 } from 'lucide-react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { toast } from 'sonner';
+import config from '@/Helpers/config';
+import apiClient from '@/lib/apiClient';
 
 interface AddEditProductModalProps {
   open: boolean;
@@ -60,15 +62,15 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       setIsLoading(true);
       if (props.selectedProduct) {
-        handleUpdateProduct()
+        await apiClient.patch(config.apiUrl + 'product/update/' + props.selectedProduct?.id, { ...formData })
       } else {
-        handleAddProduct()
+        await apiClient.post(config.apiUrl + 'products/create', { ...formData })
       }
 
       toast.success(props.selectedProduct ? 'Product updated successfully' : 'Product added successfully', { description: new Date().toLocaleString() });
@@ -82,21 +84,13 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     }
   }
 
-  const handleAddProduct = async () => {
-    // TODO: save product to database
-  }
-
-  const handleUpdateProduct = async () => {
-    // TODO: update product in database
-  }
-
   const handleDeleteProduct = async () => {
     try {
       setIsDeleteLoading(true);
       if (props.selectedProduct && props.selectedProduct.orderCount > 0) {
-        await handleDeleteUpdate();
+        await apiClient.patch(config.apiUrl + 'product/hide/' + props.selectedProduct?.id)
       } else {
-        await handleDelete();
+        await apiClient.delete(config.apiUrl + 'product/delete/' + props.selectedProduct?.id)
       }
       toast.success('Product deleted successfully', { description: new Date().toLocaleString() });
       props.reloadProducts();
@@ -107,14 +101,6 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     } finally {
       setIsDeleteLoading(false);
     }
-  }
-
-  const handleDelete = async () => {
-    // TODO: delete product from database
-  }
-
-  const handleDeleteUpdate = async () => {
-    // TODO: update product in database as deleted
   }
 
   return (
