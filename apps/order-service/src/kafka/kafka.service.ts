@@ -1,16 +1,19 @@
-import { Inject, Injectable, ServiceUnavailableException } from "@nestjs/common";
+import { Inject, Injectable, OnModuleInit, ServiceUnavailableException } from "@nestjs/common";
 import { ClientKafka } from "@nestjs/microservices";
 import { firstValueFrom } from "rxjs";
 import { IProduct, IStockUpdatePayload, IUser } from "src/helpers/interfaces";
 
 @Injectable()
-export class KafkaEventService {
+export class KafkaEventService implements OnModuleInit {
   constructor(
     @Inject('PRODUCT_SERVICE') private readonly productClient: ClientKafka,
     @Inject('USER_SERVICE') private readonly userClient: ClientKafka
   ) { }
 
   async onModuleInit() {
+    this.userClient.subscribeToResponseOf('user.create.temp');
+    this.userClient.subscribeToResponseOf('user.get.bulk');
+    this.productClient.subscribeToResponseOf('product.get.details.bulk');
     await this.productClient.connect();
     await this.userClient.connect();
   }
@@ -25,7 +28,7 @@ export class KafkaEventService {
   async getProductsData(productIds: string[]): Promise<IProduct[]> {
     try {
       if (!productIds.length) return [];
-      const { products } = await firstValueFrom<{ products: IProduct[] }>(
+      const products = await firstValueFrom<IProduct[]>(
         this.productClient.send('product.get.details.bulk', { productIds })
       );
       return products;
@@ -37,7 +40,7 @@ export class KafkaEventService {
   async getBuyersData(userIds: string[]): Promise<IUser[]> {
     try {
       if (!userIds.length) return [];
-      const { buyers } = await firstValueFrom<{ buyers: IUser[] }>(
+      const buyers  = await firstValueFrom<IUser[]>(
         this.userClient.send('user.get.bulk', { userIds })
       );
       return buyers;
@@ -59,7 +62,7 @@ export class KafkaEventService {
 
   async fetchProductIdsBySeller(sellerId: string): Promise<string[]> {
     try {
-      const { productIds } = await firstValueFrom<{ productIds: string[] }>(
+      const productIds = await firstValueFrom<string[]>(
         this.productClient.send('product.ids.by.seller', { sellerId })
       );
       return productIds;

@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Patch, Param, Delete } from '@nestjs/commo
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create.dto';
 import { UpdateProductDto } from './dto/update.dto';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { updateStockDto } from './dto/update-stock.dto';
 
 @Controller('products')
@@ -14,14 +14,14 @@ export class ProductController {
     return this.service.updateStockOrderCountUpdate(body);
   }
 
-  @EventPattern('product.ids.by.seller')
-  findProductIdsBySeller(@Payload() body: { sellerId: string }) {
-    return this.service.findProductIdsBySeller(body.sellerId);
+  @MessagePattern('product.ids.by.seller')
+  async findProductIdsBySeller(@Payload() body: { sellerId: string }) {
+    return await this.service.findProductIdsBySeller(body.sellerId);
   }
 
-  @EventPattern('product.get.details.bulk')
-  findBulkProductDetails(@Payload() body: { productIds: string[] }) {
-    return this.service.findBulkProductDetails(body.productIds);
+  @MessagePattern('product.get.details.bulk')
+  async findBulkProductDetails(@Payload() body: { productIds: string[] }) {
+    return await this.service.findBulkProductDetails(body.productIds);
   }
 
   // TODO: should be seller validated
