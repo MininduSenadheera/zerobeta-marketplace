@@ -40,6 +40,12 @@ export class ProductController {
     return this.service.findAll();
   }
 
+  // TODO: should be seller validated
+  @Get('by-seller/:sellerId')
+  findProductsBySeller(@Param('sellerId') sellerId: string) {
+    return this.service.findProductsBySeller(sellerId);
+  }
+
   @Post('by-ids')
   findBulkProductDetailsHttp(@Body() body: { productIds: string[] }) {
     return this.service.findBulkProductDetails(body.productIds);

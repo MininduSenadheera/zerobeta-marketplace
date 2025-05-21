@@ -35,7 +35,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get<IProduct>(config.apiUrl + 'products/by-id' + productId) 
+        const response = await axios.get<IProduct>(config.apiUrl + 'products/by-id/' + productId) 
         setProduct(response.data)
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -59,7 +59,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
   const isOutOfStock = product.stock === 0;
 
   return (
-    <div className="container mx-auto h-full px-4 sm:px-0 py-10">
+    <div className="container mx-auto h-screen px-4 sm:px-0 py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 h-full items-center">
         <Carousel
           autoPlay={false}
@@ -75,7 +75,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
           }
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <Image src='/images/product.png' key={index} alt={`Product image ${index + 1}`} width={500} height={500} className="object-contain max-h-[50vh] w-full" />
+            <Image src='/images/product.png' key={index} alt={`Product image ${index + 1}`} width={500} height={0} className="object-contain max-h-[50vh] w-full" />
           ))}
         </Carousel>
         <div className="space-y-4">
@@ -106,6 +106,12 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
             </span>
           </div>
           <p className="text-muted-foreground">{product.description}</p>
+          <p className="text-sm text-muted-foreground mb-0">
+            Seller: {product.seller.firstname} {product.seller.lastname}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            From: {product.seller.country}
+          </p>
           <QuantityField quantity={quantity} max={product.stock} setQuantity={setQuantity} />
           <div className="flex gap-3 my-4">
             <Button

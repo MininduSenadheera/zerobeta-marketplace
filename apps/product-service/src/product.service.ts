@@ -22,7 +22,10 @@ export class ProductService {
   private async invalidateProductCache(id?: string, sellerId?: string) {
     const keys = ['products:all'];
     if (id) keys.push(`product:${id}`);
-    if (sellerId) keys.push(`products:seller:${sellerId}`);
+    if (sellerId) {
+      keys.push(`products:seller:${sellerId}`);
+      keys.push(`products:seller:full:${sellerId}`);
+    }
     await Promise.all(keys.map((key) => this.redis.del(key)));
   }
 
@@ -31,7 +34,7 @@ export class ProductService {
 
     const sellers = await this.kafkaService.getSellersData(sellerIds);
     const sellersMap = new Map(sellers.map(u => [u.id, u]));
-    
+
     return products.map(product => ({
       ...product,
       seller: sellersMap.get(product.sellerId),
@@ -70,6 +73,20 @@ export class ProductService {
     await this.redis.set('products:all', enrichedProducts, this.cache_ttl);
 
     return enrichedProducts;
+  }
+
+  async findProductsBySeller(sellerId: string) {
+    const cacheKey = `products:seller:full:${sellerId}`;
+    const cached = await this.redis.get<IProduct[]>(cacheKey);
+    if (cached) return cached;
+
+    const products = await this.repo.find({ where: { sellerId, isDeleted: false } });
+    if (!products.length) return [];
+
+    const enriched = await this.enrichProduct(products);
+    await this.redis.set(cacheKey, enriched, this.cache_ttl);
+
+    return enriched;
   }
 
   async findProductIdsBySeller(sellerId: string) {
