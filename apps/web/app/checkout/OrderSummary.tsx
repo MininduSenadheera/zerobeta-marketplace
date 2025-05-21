@@ -51,13 +51,13 @@ function OrderSummary({ productsAndQuantities, shipping }: OrderSummaryProps) {
           </div>
           <div className='text-end'>
             <p>${subTotal.toFixed(2)}</p>
-            <p>{shipping === "Delivery" ? `$${shippingCost.toFixed(2)}` : 'Free'}</p>
+            <p>{shipping === "Deliver" ? `$${shippingCost.toFixed(2)}` : 'Free'}</p>
           </div>
         </div>
         <Separator />
         <div className='flex justify-between items-center'>
           <h4 className='text-xl font-bold'>Total</h4>
-          <h4 className='text-xl font-bold'>${(subTotal + (shipping === "Delivery" ? shippingCost : 0)).toFixed(2)}</h4>
+          <h4 className='text-xl font-bold'>${(subTotal + (shipping === "Deliver" ? shippingCost : 0)).toFixed(2)}</h4>
         </div>
       </CardContent>
     </Card>

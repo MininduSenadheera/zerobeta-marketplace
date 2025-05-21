@@ -2,6 +2,7 @@ import { useState, createContext, useEffect, useCallback } from 'react';
 import { IUser } from '@/Helpers/Interfaces';
 import axios from 'axios';
 import config from '@/Helpers/config';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextProps {
   user: IUser | null;
@@ -22,6 +23,7 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -44,6 +46,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   const logout = () => {
     localStorage.removeItem('token');
+    router.push('/signin');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };

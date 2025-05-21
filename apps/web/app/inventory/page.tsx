@@ -7,9 +7,9 @@ import { Loader2 } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react'
 import AddEditProductModal from '@/components/AddEditProductModal';
 import { ProtectedRoute } from '@/Helpers/ProtectedRoute';
-import axios from 'axios';
 import config from '@/Helpers/config';
 import { AuthContext } from '@/context/AuthContext';
+import apiClient from '@/lib/apiClient';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function Inventory() {
@@ -22,12 +22,12 @@ function Inventory() {
   useEffect(() => {
     fetchProducts()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   const fetchProducts = async () => {
     try {
       setIsLoading(true)
-      const response = await axios.get<IProduct[]>(config.apiUrl + 'products/by-seller/' + user?.id)
+      const response = await apiClient.get<IProduct[]>(config.apiUrl + 'products/by-seller')
       setProducts(response.data)
     } catch (error) {
       console.log(error)

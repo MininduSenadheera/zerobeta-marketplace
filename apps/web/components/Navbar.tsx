@@ -68,9 +68,7 @@ function Navbar() {
                 <DropdownMenuLabel>{user.firstname} {user.lastname}</DropdownMenuLabel>
                 <DropdownMenuLabel className='text-sm'>{user.userRole}</DropdownMenuLabel>
               </div>
-              
               <Separator className='my-3' />
-              <DropdownMenuItem onClick={() => router.push('/my-orders')}>My Orders</DropdownMenuItem>
               <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
