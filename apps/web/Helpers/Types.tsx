@@ -1,3 +1,3 @@
-export type ShippingMethodTypes = "Delivery" | "Pickup"
+export type ShippingMethodTypes = "Deliver" | "Pickup"
 export type OrderStatusTypes = "Pending" |"Completed" | "Cancelled"
 export type UserRoleTypes = "Seller" | "Buyer"

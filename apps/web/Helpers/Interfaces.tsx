@@ -24,15 +24,15 @@ export interface IOrder {
   city: string
   country: string
   buyer: IUser
-  products: {
+  items: {
     product: IProduct,
     quantity: number
     unitPrice: number
   }[]
-  shippingMethod: ShippingMethodTypes
+  shipping: ShippingMethodTypes
   shippingCost: number
   totalPrice: number
-  date: Date
+  createdAt: Date
   status: OrderStatusTypes
 }
 
