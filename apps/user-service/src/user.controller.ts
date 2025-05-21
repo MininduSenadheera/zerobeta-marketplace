@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateTempUserDto } from './dto/create-temp-user.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
@@ -11,14 +11,14 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class UserController {
   constructor(private service: UserService) { }
 
-  @EventPattern('user.get.bulk')
-  getBulkUsers(@Payload() userIds: string[]) {
-    return this.service.getBulkUsers(userIds);
+  @MessagePattern('user.get.bulk')
+  async getBulkUsers(@Payload() userIds: string[]) {
+    return await this.service.getBulkUsers(userIds);
   }
 
-  @EventPattern('user.create.temp')
-  createTempUser(@Payload() body: CreateTempUserDto) {
-    return this.service.createTempUser(body);
+  @MessagePattern('user.create.temp')
+  async createTempUser(@Payload() body: CreateTempUserDto) {
+    return await this.service.createTempUser(body);
   }
 
   @Post('register')
@@ -33,7 +33,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post('validate-token')
+  @Get('validate-token')
   validateToken(@Req() req) {
     return req.user;
   }
