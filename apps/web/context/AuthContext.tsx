@@ -59,8 +59,8 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
         }
       });
 
-      if (response.data.user) {
-        setUser(response.data.user);
+      if (response.data) {
+        setUser(response.data);
         return true;
       }
       return false;
