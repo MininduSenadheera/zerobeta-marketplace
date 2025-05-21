@@ -1,4 +1,3 @@
-import { UserRoleTypes } from 'src/enums/user.enums';
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
@@ -22,8 +21,8 @@ export class User {
   @Column({nullable: true})
   password: string;
 
-  @Column({ type: 'enum', enum: UserRoleTypes })
-  userRole: UserRoleTypes;
+  @Column({ type: 'text' })
+  userRole: string;
 
   @Column({ default: false })
   isTemp: boolean;

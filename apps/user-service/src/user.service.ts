@@ -107,6 +107,7 @@ export class UserService {
 
     const user = this.repo.create({
       ...dto,
+      userRole: 'buyer',
       isTemp: true,
     });
 
