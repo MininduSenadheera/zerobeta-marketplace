@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsString, IsArray, IsNumber, IsUUID, IsOptional } from 'class-validator';
-import { ShippingMethodTypes } from 'src/enums/order.enums';
+import { IsEmail, IsString, IsArray, IsNumber, IsUUID, IsOptional } from 'class-validator';
 
 export class OrderProductDto {
   @ApiProperty()
@@ -51,8 +50,8 @@ export class CreateOrderDto {
   productQuantities: OrderProductDto[];
 
   @ApiProperty()
-  @IsEnum(ShippingMethodTypes)
-  shipping: ShippingMethodTypes;
+  @IsString()
+  shipping: string;
 
   @ApiProperty()
   @IsNumber()

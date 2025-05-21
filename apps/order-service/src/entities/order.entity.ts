@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { OrderStatusTypes, ShippingMethodTypes } from "../enums/order.enums";
 import { OrderItem } from "./order-item.entity";
 
 @Entity()
@@ -19,14 +18,14 @@ export class Order {
   @Column('text')
   country: string;
 
-  @Column({ type: 'enum', enum: ShippingMethodTypes })
-  shipping: ShippingMethodTypes;
+  @Column({ type: 'text' })
+  shipping: string;
 
   @Column('decimal')
   shippingCost: number;
 
-  @Column({ type: 'enum', enum: OrderStatusTypes, default: OrderStatusTypes.Pending })
-  status: OrderStatusTypes;
+  @Column({ type: 'text', default: 'Pending' })
+  status: string;
 
   @Column({ type: 'uuid' })
   buyerId: string;

@@ -6,7 +6,6 @@ import { CreateOrderDto } from './dto/create.dto';
 export class OrderController {
   constructor(private readonly service: OrderService) { }
 
-  // TODO: should be buyer validated
   @Post('create')
   async create(@Body() body: CreateOrderDto) {
     return this.service.createOrder(body);
@@ -19,7 +18,7 @@ export class OrderController {
   }
 
   // TODO: should be seller validated
-  @Get('seller')
+  @Get('seller/:sellerId')
   findBySeller(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
@@ -29,8 +28,8 @@ export class OrderController {
   }
 
   // TODO: should be buyer validated
-  @Get('buyer')
-  async findByBuyer(
+  @Get('buyer/:buyerId')
+  findByBuyer(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Param('buyerId') buyerId: string

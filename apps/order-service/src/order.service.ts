@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
-import { OrderStatusTypes } from './enums/order.enums';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderItem } from './entities/order-item.entity';
 import { CreateOrderDto } from './dto/create.dto';
@@ -29,7 +28,7 @@ export class OrderService {
         product: productsMap.get(item.productId),
       })),
       buyer: buyersMap.get(order.buyerId),
-      totalPrice: order.items.reduce((total, item) => total + item.unitPrice * item.quantity, 0)
+      totalPrice: order.items.reduce((total, item) => total + item.unitPrice * item.quantity, 0) + order.shippingCost,
     }));
 
     return enhanced.map(order => ({
@@ -51,7 +50,7 @@ export class OrderService {
     const order = this.orderRepo.create({
       ...body,
       buyerId,
-      status: OrderStatusTypes.Pending,
+      status: 'Pending',
       referenceNo,
     });
 
@@ -152,11 +151,11 @@ export class OrderService {
 
     if (!order) throw new NotFoundException('Order not found');
 
-    if ([OrderStatusTypes.Completed, OrderStatusTypes.Cancelled].includes(order.status)) {
+    if (['Completed', 'Cancelled'].includes(order.status)) {
       throw new BadRequestException(`Order is already ${order.status.toLowerCase()}`);
     }
 
-    order.status = OrderStatusTypes.Cancelled;
+    order.status = 'Cancelled';
     await this.orderRepo.save(order);
 
     const orderItems = await this.orderItemRepo.find({ where: { orderId } });
@@ -168,13 +167,13 @@ export class OrderService {
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   async updatePendingOrdersToCompleted() {
-    const pendingOrders = await this.orderRepo.find({ where: { status: OrderStatusTypes.Pending } });
+    const pendingOrders = await this.orderRepo.find({ where: { status: 'Pending' } });
 
     if (!pendingOrders.length) return { updated: 0 };
 
     await this.orderRepo.save(pendingOrders.map(order => ({
       ...order,
-      status: OrderStatusTypes.Completed,
+      status: 'Completed',
     })));
 
     return { updated: pendingOrders.length };
