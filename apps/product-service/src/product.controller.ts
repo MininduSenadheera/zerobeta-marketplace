@@ -15,13 +15,13 @@ export class ProductController {
   }
 
   @MessagePattern('product.ids.by.seller')
-  async findProductIdsBySeller(@Payload() body: { sellerId: string }) {
-    return await this.service.findProductIdsBySeller(body.sellerId);
+  async findProductIdsBySeller(@Payload() sellerId: string ) {
+    return await this.service.findProductIdsBySeller(sellerId);
   }
 
   @MessagePattern('product.get.details.bulk')
-  async findBulkProductDetails(@Payload() body: { productIds: string[] }) {
-    return await this.service.findBulkProductDetails(body.productIds);
+  async findBulkProductDetails(@Payload() productIds: string[]) {
+    return await this.service.findBulkProductDetails(productIds);
   }
 
   // TODO: should be seller validated

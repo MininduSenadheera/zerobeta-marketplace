@@ -29,7 +29,7 @@ export class KafkaEventService implements OnModuleInit {
     try {
       if (!productIds.length) return [];
       const products = await firstValueFrom<IProduct[]>(
-        this.productClient.send('product.get.details.bulk', { productIds })
+        this.productClient.send('product.get.details.bulk', productIds)
       );
       return products;
     } catch {
@@ -41,7 +41,7 @@ export class KafkaEventService implements OnModuleInit {
     try {
       if (!userIds.length) return [];
       const buyers  = await firstValueFrom<IUser[]>(
-        this.userClient.send('user.get.bulk', { userIds })
+        this.userClient.send('user.get.bulk', userIds)
       );
       return buyers;
     } catch {
@@ -63,7 +63,7 @@ export class KafkaEventService implements OnModuleInit {
   async fetchProductIdsBySeller(sellerId: string): Promise<string[]> {
     try {
       const productIds = await firstValueFrom<string[]>(
-        this.productClient.send('product.ids.by.seller', { sellerId })
+        this.productClient.send('product.ids.by.seller', sellerId)
       );
       return productIds;
     } catch {
