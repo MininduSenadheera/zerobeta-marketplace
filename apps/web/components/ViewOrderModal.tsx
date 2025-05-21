@@ -8,7 +8,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import config from '@/Helpers/config';
 import apiClient from '@/lib/apiClient';
-import axios from 'axios';
 
 interface ViewOrderModalProps {
   open: boolean;

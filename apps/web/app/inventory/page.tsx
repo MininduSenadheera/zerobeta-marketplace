@@ -21,7 +21,6 @@ function Inventory() {
 
   useEffect(() => {
     fetchProducts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const fetchProducts = async () => {
