@@ -4,12 +4,16 @@ import { IProduct } from '@/Helpers/Interfaces';
 import { AgGridReact } from 'ag-grid-react'
 import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
 import { Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import AddEditProductModal from '@/components/AddEditProductModal';
 import { ProtectedRoute } from '@/Helpers/ProtectedRoute';
+import axios from 'axios';
+import config from '@/Helpers/config';
+import { AuthContext } from '@/context/AuthContext';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function Inventory() {
+  const { user } = useContext(AuthContext)
   const [products, setProducts] = useState<IProduct[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showAddEditProductModal, setShowAddEditProductModal] = useState<boolean>(false)
@@ -17,13 +21,14 @@ function Inventory() {
 
   useEffect(() => {
     fetchProducts()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchProducts = async () => {
     try {
       setIsLoading(true)
-      // TODO: Fetch products from server
-      setProducts([])
+      const response = await axios.get<IProduct[]>(config.apiUrl + 'products/by-seller/' + user?.id)
+      setProducts(response.data)
     } catch (error) {
       console.log(error)
     } finally {
