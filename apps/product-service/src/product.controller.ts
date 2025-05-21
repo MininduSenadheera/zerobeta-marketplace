@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Get, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create.dto';
 import { UpdateProductDto } from './dto/update.dto';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { updateStockDto } from './dto/update-stock.dto';
+import { KafkaAuthGuard } from './kafka/kafka-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductController {
@@ -15,7 +17,7 @@ export class ProductController {
   }
 
   @MessagePattern('product.ids.by.seller')
-  async findProductIdsBySeller(@Payload() sellerId: string ) {
+  async findProductIdsBySeller(@Payload() sellerId: string) {
     return await this.service.findProductIdsBySeller(sellerId);
   }
 
@@ -24,10 +26,11 @@ export class ProductController {
     return await this.service.findBulkProductDetails(productIds);
   }
 
-  // TODO: should be seller validated
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
   @Post('create')
-  create(@Body() body: CreateProductDto) {
-    return this.service.create(body);
+  create(@Body() body: CreateProductDto, @Req() req: { user: { id: string } }) {
+    return this.service.create({ ...body, sellerId: req.user.id });
   }
 
   @Get('by-id/:id')
@@ -40,10 +43,11 @@ export class ProductController {
     return this.service.findAll();
   }
 
-  // TODO: should be seller validated
-  @Get('by-seller/:sellerId')
-  findProductsBySeller(@Param('sellerId') sellerId: string) {
-    return this.service.findProductsBySeller(sellerId);
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
+  @Get('by-seller')
+  findProductsBySeller(@Req() req: { user: { id: string } }) {
+    return this.service.findProductsBySeller(req.user.id);
   }
 
   @Post('by-ids')
@@ -51,21 +55,24 @@ export class ProductController {
     return this.service.findBulkProductDetails(body.productIds);
   }
 
-  // TODO: should be seller validated
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
   @Patch('update/:id')
-  update(@Param('id') id: string, @Body() body: UpdateProductDto) {
-    return this.service.update(id, body);
+  update(@Param('id') id: string, @Body() body: UpdateProductDto, @Req() req: { user: { id: string } }) {
+    return this.service.update(id, body, req.user.id);
   }
 
-  // TODO: should be seller validated
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
   @Patch('hide/:id')
-  softDelete(@Param('id') id: string) {
-    return this.service.softDelete(id);
+  softDelete(@Param('id') id: string, @Req() req: { user: { id: string } }) {
+    return this.service.softDelete(id, req.user.id);
   }
 
-  // TODO: should be seller validated
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
   @Delete('delete/:id')
-  delete(@Param('id') id: string) {
-    return this.service.delete(id);
+  delete(@Param('id') id: string, @Req() req: { user: { id: string } }) {
+    return this.service.delete(id, req.user.id);
   }
 }

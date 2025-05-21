@@ -11,6 +11,7 @@ export class KafkaEventService implements OnModuleInit {
 
   async onModuleInit() {
     this.userClient.subscribeToResponseOf('user.get.bulk');
+    this.userClient.subscribeToResponseOf('user.validate.token');
     await this.userClient.connect();
   }
 
@@ -23,6 +24,17 @@ export class KafkaEventService implements OnModuleInit {
       return sellers;
     } catch {
       throw new ServiceUnavailableException('Failed to fetch seller details');
+    }
+  }
+
+  async validateToken(token: string): Promise<IUser> {
+    try {
+      const user: IUser = await firstValueFrom<IUser>(
+        this.userClient.send('user.validate.token', token)
+      );
+      return user;
+    } catch {
+      throw new ServiceUnavailableException('Failed to validate token');
     }
   }
 }

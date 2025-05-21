@@ -80,7 +80,7 @@ export class ProductService {
     const cached = await this.redis.get<IProduct[]>(cacheKey);
     if (cached) return cached;
 
-    const products = await this.repo.find({ where: { sellerId, isDeleted: false } });
+    const products = await this.repo.find({ where: { sellerId } });
     if (!products.length) return [];
 
     const enriched = await this.enrichProduct(products);
