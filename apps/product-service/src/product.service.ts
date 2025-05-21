@@ -131,20 +131,23 @@ export class ProductService {
     return enrichedProducts;
   }
 
-  async update(id: string, product: UpdateProductDto) {
-    const existing = await this.repo.findOne({ where: { id } });
+  async update(id: string, product: UpdateProductDto, sellerId: string) {
+    const existing = await this.repo.findOne({ where: { id: id, sellerId: sellerId } });
+    if (!existing) throw new NotFoundException('Product not found Or You are not the owner');
     await this.invalidateProductCache(id, existing?.sellerId);
     return this.repo.update(id, product);
   }
 
-  async softDelete(id: string) {
-    const existing = await this.repo.findOne({ where: { id } });
+  async softDelete(id: string, sellerId: string) {
+    const existing = await this.repo.findOne({ where: { id: id, sellerId: sellerId } });
+    if (!existing) throw new NotFoundException('Product not found Or You are not the owner');
     await this.invalidateProductCache(id, existing?.sellerId);
     return this.repo.update(id, { isDeleted: true });
   }
 
-  async delete(id: string) {
-    const existing = await this.repo.findOne({ where: { id } });
+  async delete(id: string, sellerId: string) {
+    const existing = await this.repo.findOne({ where: { id: id, sellerId: sellerId } });
+    if (!existing) throw new NotFoundException('Product not found Or You are not the owner');
     await this.invalidateProductCache(id, existing?.sellerId);
     return this.repo.delete(id);
   }
