@@ -14,6 +14,8 @@ export class KafkaEventService implements OnModuleInit {
     this.userClient.subscribeToResponseOf('user.create.temp');
     this.userClient.subscribeToResponseOf('user.get.bulk');
     this.productClient.subscribeToResponseOf('product.get.details.bulk');
+    this.productClient.subscribeToResponseOf('product.ids.by.seller');
+    this.userClient.subscribeToResponseOf('user.validate.token');
     await this.productClient.connect();
     await this.userClient.connect();
   }
@@ -68,6 +70,17 @@ export class KafkaEventService implements OnModuleInit {
       return productIds;
     } catch {
       throw new ServiceUnavailableException('Failed to fetch products by seller');
+    }
+  }
+
+  async validateToken(token: string): Promise<IUser> {
+    try {
+      const user: IUser = await firstValueFrom<IUser>(
+        this.userClient.send('user.validate.token', token)
+      );
+      return user;
+    } catch {
+      throw new ServiceUnavailableException('Failed to validate token');
     }
   }
 }

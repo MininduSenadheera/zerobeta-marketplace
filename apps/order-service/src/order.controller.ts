@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Param, Query, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Patch, UseGuards, Req } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create.dto';
+import { KafkaAuthGuard } from './kafka/kafka-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('orders')
 export class OrderController {
@@ -11,38 +13,46 @@ export class OrderController {
     return this.service.createOrder(body);
   }
 
-  // TODO: should be buyer or seller validated
+
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
   @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
 
-  // TODO: should be seller validated
-  @Get('seller/:sellerId')
+
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
+  @Get('seller')
   findBySeller(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Param('sellerId') sellerId: string
+    @Req() req: { user: { id: string } }
   ) {
-    return this.service.getOrdersBySeller(sellerId, page, limit);
+    return this.service.getOrdersBySeller(req.user.id, page, limit);
   }
 
-  // TODO: should be buyer validated
-  @Get('buyer/:buyerId')
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
+  @Get('buyer')
   findByBuyer(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Param('buyerId') buyerId: string
+    @Req() req: { user: { id: string } }
   ) {
-    return this.service.getOrdersByBuyer(buyerId, page, limit);
+    return this.service.getOrdersByBuyer(req.user.id, page, limit);
   }
 
-  // TODO: should be buyer validated
-  @Patch('cancel')
+
+  @ApiBearerAuth()
+  @UseGuards(KafkaAuthGuard)
+  @Patch('cancel/:orderId')
   async cancel(
-    body: { id: string, buyerId: string }
+    @Param('orderId') orderId: string,
+    @Req() req: { user: { id: string } }
   ) {
-    return this.service.cancelOrder(body.id, body.buyerId);
+    return this.service.cancelOrder(orderId, req.user.id);
   }
 
   @Patch('update-pending')
