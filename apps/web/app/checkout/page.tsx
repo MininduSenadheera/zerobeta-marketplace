@@ -15,6 +15,7 @@ import OrderSummary from './OrderSummary'
 import { AuthContext } from '@/context/AuthContext'
 import axios from 'axios'
 import config from '@/Helpers/config'
+import { toast } from 'sonner'
 
 function Checkout() {
   const router = useRouter()
@@ -35,7 +36,7 @@ function Checkout() {
     address: '',
     city: '',
     country: '',
-    shipping: 'Delivery'
+    shipping: 'Deliver'
   })
 
   useEffect(() => {
@@ -45,6 +46,15 @@ function Checkout() {
       fetchProducts(cart)
     } else {
       router.back()
+    }
+
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+      }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
@@ -100,7 +110,7 @@ function Checkout() {
     const { email, firstname, lastname, address, city, country, shipping } = formData
 
     const order = {
-      userId: user?.id || '',
+      buyerId: user?.id || '',
       email,
       firstname,
       lastname,
@@ -124,11 +134,16 @@ function Checkout() {
 
     try {
       setIsOrderPlacing(true)
-      // TODO: Save order to server
+      await axios.post(config.apiUrl + 'orders/create', order)
       if (!productId) {
         clearCart()
       }
-      router.push('/order-success')
+      toast.success('Order placed successfully!')
+      if (user) {
+        router.push('/orders')
+      } else {
+        router.push('/products')
+      }
     } catch (e) {
       console.error("Error saving order: ", e);
     } finally {
@@ -170,8 +185,8 @@ function Checkout() {
           <h4 className='text-xl'>Shipping Method</h4>
           <RadioGroup value={formData.shipping} name="shipping" onValueChange={(value) => setFormData({ ...formData, shipping: value })} required>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Delivery" id="Delivery" />
-              <Label htmlFor="Delivery">Delivery within 2 to 5 working days - ${shippingCost.toFixed(2)}</Label>
+              <RadioGroupItem value="Deliver" id="Deliver" />
+              <Label htmlFor="Deliver">Delivery within 2 to 5 working days - ${shippingCost.toFixed(2)}</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Pickup" id="Pickup" />
