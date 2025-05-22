@@ -35,6 +35,8 @@ async function bootstrap() {
     .setTitle('Product Service API')
     .setDescription('API docs for products micro service')
     .setVersion('1.0')
+    .addServer('/api/products')
+    .addServer('/')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

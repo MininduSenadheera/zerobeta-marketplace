@@ -7,7 +7,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
-@Controller('users')
+@Controller('')
 export class UserController {
   constructor(private service: UserService) { }
 

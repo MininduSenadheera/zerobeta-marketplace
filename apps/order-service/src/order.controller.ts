@@ -4,7 +4,7 @@ import { CreateOrderDto } from './dto/create.dto';
 import { KafkaAuthGuard } from './kafka/kafka-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-@Controller('orders')
+@Controller('')
 export class OrderController {
   constructor(private readonly service: OrderService) { }
 

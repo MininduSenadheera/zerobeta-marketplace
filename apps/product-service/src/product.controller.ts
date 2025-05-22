@@ -7,7 +7,7 @@ import { updateStockDto } from './dto/update-stock.dto';
 import { KafkaAuthGuard } from './kafka/kafka-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-@Controller('products')
+@Controller('')
 export class ProductController {
   constructor(private service: ProductService) { }
 
