@@ -20,7 +20,6 @@ export default function Signup() {
     lastname: "",
     email: "",
     country: "",
-    phoneNumber: "",
     password: "",
     confirmPassword: "",
   })
@@ -47,8 +46,17 @@ export default function Signup() {
       return
     }
 
+    const data = {
+      userRole: formData.userRole,
+      firstname: formData.firstname,
+      lastname: formData.lastname,
+      email: formData.email,
+      country: formData.country,
+      password: formData.password
+    }
+
     try {
-      await axios.post(config.apiUrl + 'users/register', { ...formData })
+      await axios.post(config.apiUrl + 'users/register', data)
       toast.success("Account created successfully! Please sign in.")
       router.push("/signin")
     } catch (error) {
