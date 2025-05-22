@@ -71,7 +71,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
           showIndicators={false}
           renderThumbs={() => Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="w-full h-10 relative">
-              <Image src='/images/product.png' layout="fill" objectFit="cover" alt={`Thumbnail ${index + 1}`}></Image>
+              <Image src='/images/product.png' fill objectFit="cover" alt={`Thumbnail ${index + 1}`}></Image>
             </div>
           ))
           }

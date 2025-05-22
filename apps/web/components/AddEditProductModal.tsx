@@ -1,3 +1,4 @@
+"use client"
 import { useCallback, useEffect, useState } from 'react';
 import { IProduct } from '@/Helpers/Interfaces';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
@@ -23,7 +24,7 @@ function AddEditProductModal(props: AddEditProductModalProps) {
     code: "",
     name: "",
     description: "",
-    price: 0,
+    price: '',
     stock: 0
   })
 
@@ -49,7 +50,7 @@ function AddEditProductModal(props: AddEditProductModalProps) {
       code: "",
       name: "",
       description: "",
-      price: 0,
+      price: "",
       stock: 0
     });
   }
@@ -136,7 +137,7 @@ function AddEditProductModal(props: AddEditProductModalProps) {
               <Label className="text-sm font-medium">Price</Label>
               <Input
                 id="price" name="price" type="number" placeholder="Price" required
-                value={formData.price} onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                value={formData.price} onChange={handleChange}
               />
             </div>
           </div>

@@ -1,3 +1,4 @@
+"use client";
 import { useState, createContext, useEffect, useCallback } from 'react';
 import { IUser } from '@/Helpers/Interfaces';
 import axios from 'axios';
