@@ -8,11 +8,15 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class OrderController {
   constructor(private readonly service: OrderService) { }
 
+  @Get('/health')
+  getHealth() {
+    return { status: 'ok' };
+  }
+  
   @Post('create')
   async create(@Body() body: CreateOrderDto) {
     return this.service.createOrder(body);
   }
-
 
   @ApiBearerAuth()
   @UseGuards(KafkaAuthGuard)

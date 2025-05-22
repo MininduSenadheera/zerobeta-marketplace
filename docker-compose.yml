@@ -108,6 +108,8 @@ services:
       - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./wait-for-services.sh:/wait-for-services.sh
+    command: [ "sh", "/wait-for-services.sh" ]
     depends_on:
       - product-service
       - order-service

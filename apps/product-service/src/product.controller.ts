@@ -26,6 +26,11 @@ export class ProductController {
     return await this.service.findBulkProductDetails(productIds);
   }
 
+  @Get('/health')
+  getHealth() {
+    return { status: 'ok' };
+  }
+  
   @ApiBearerAuth()
   @UseGuards(KafkaAuthGuard)
   @Post('create')

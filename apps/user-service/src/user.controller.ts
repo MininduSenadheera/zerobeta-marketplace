@@ -26,6 +26,11 @@ export class UserController {
     return this.service.validateToken(token);
   }
 
+  @Get('/health')
+  getHealth() {
+    return { status: 'ok' };
+  }
+
   @Post('register')
   create(@Body() body: CreateUserDto) {
     return this.service.create(body);
