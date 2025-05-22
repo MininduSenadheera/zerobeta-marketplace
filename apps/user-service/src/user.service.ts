@@ -48,7 +48,11 @@ export class UserService {
     }
 
     if (existingUser?.isTemp) {
-      return this.handleTempUserUpgrade(existingUser, user);
+      if (user.userRole === 'Seller') {
+        throw new BadRequestException('Email already registered as a customer');
+      } else {
+        return this.handleTempUserUpgrade(existingUser, user);
+      }
     }
 
     return this.createNewUser(user);
