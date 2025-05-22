@@ -34,7 +34,7 @@ export const CartContextProvider = ({ children }: { children: React.ReactNode })
 
   const syncCartToLocalStorage = useCallback((updatedCart: ICartItem[]) => {
     setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    localStorage.setItem('zerobeta_cart', JSON.stringify(updatedCart));
   }, []);
 
   const addToCart = useCallback(
