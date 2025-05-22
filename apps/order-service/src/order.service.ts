@@ -28,7 +28,6 @@ export class OrderService {
         product: productsMap.get(item.productId),
       })),
       buyer: buyersMap.get(order.buyerId),
-      totalPrice: order.items.reduce((total, item) => total + item.unitPrice * item.quantity, 0) + order.shippingCost,
     }));
 
     return enhanced.map(order => ({
@@ -112,8 +111,15 @@ export class OrderService {
       this.kafkaService.getBuyersData([...new Set(orders.map(order => order.buyerId))]),
     ]);
 
+    const enrichedOrders = this.enrichOrders(orders, productsMap, buyersMap);
+
+    const filteredOrders = enrichedOrders.map(order => ({
+      ...order,
+      items: order.items.filter(item => productIds.includes(item.productId)),
+    }));
+
     return {
-      data: this.enrichOrders(orders, productsMap, buyersMap),
+      data: filteredOrders,
       total,
       currentPage: page,
       pageSize: limit,
