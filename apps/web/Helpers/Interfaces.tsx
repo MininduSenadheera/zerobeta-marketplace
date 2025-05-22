@@ -4,7 +4,7 @@ export interface IProduct {
   id: string
   code: string
   name: string
-  price: number
+  price: string
   description: string
   stock: number
   orderCount: number
@@ -27,11 +27,10 @@ export interface IOrder {
   items: {
     product: IProduct,
     quantity: number
-    unitPrice: number
+    unitPrice: string
   }[]
   shipping: ShippingMethodTypes
-  shippingCost: number
-  totalPrice: number
+  shippingCost: string
   createdAt: Date
   status: OrderStatusTypes
 }

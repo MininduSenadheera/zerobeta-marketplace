@@ -36,6 +36,13 @@ function Inventory() {
     }
   }
 
+  const getTotalPrice = (order: IOrder) => {
+    const itemsTotal = order.items.reduce((acc, item) => {
+      return acc + (parseFloat(item.unitPrice) * item.quantity)
+    }, 0)
+    return itemsTotal + parseFloat(order.shippingCost || '0')
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -47,7 +54,7 @@ function Inventory() {
   const columnDefs: ColDef[] = [
     { headerName: 'Reference No', field: 'referenceNo' },
     {
-      headerName: 'Products', sortable: true, filter: true,
+      headerName: 'Products', sortable: true, filter: true, autoHeight: true,
       cellRenderer: (params: { data: IOrder }) => {
         return (
           <div>
@@ -87,7 +94,7 @@ function Inventory() {
       cellRenderer: (params: { data: IOrder }) => {
         return (
           <div>
-            <div>${params.data.totalPrice}</div>
+            <div>${getTotalPrice(params.data).toFixed(2)}</div>
             {params.data.shipping === 'Deliver' && <small>shipping included</small>}
           </div>
         )

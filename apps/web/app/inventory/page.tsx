@@ -49,7 +49,7 @@ function Inventory() {
     { headerName: 'Description', field: 'description', sortable: false, autoHeight: true },
     {
       headerName: 'Price', field: 'price', type: 'numericColumn',
-      valueGetter: params => `$${params.data.price.toFixed(2)}`
+      valueGetter: params => `$${params.data.price}`
     },
     { headerName: 'Orders', field: 'orderCount' },
     {

@@ -50,7 +50,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
   const subTotal = useMemo(() => {
     return cartItems.reduce((acc, item) => {
       const product = products.find(product => product.id === item.productId);
-      return acc + (product?.price || 0) * item.quantity;
+      return acc + parseFloat(product?.price || '0') * item.quantity;
     }, 0);
   }, [cartItems, products]);
 
@@ -112,7 +112,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                             }}
                           />
                           <p className="font-semibold">
-                            ${(product.price * item.quantity).toFixed(2)}
+                            ${(parseFloat(product.price) * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </CardContent>

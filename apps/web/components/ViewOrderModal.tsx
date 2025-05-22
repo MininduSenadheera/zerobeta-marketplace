@@ -35,6 +35,13 @@ function ViewOrderModal(props: ViewOrderModalProps) {
     }
   }
 
+  const getTotalPrice = (order: IOrder) => {
+    const itemsTotal = order.items.reduce((acc, item) => {
+      return acc + (parseFloat(item.unitPrice) * item.quantity)
+    }, 0)
+    return itemsTotal + parseFloat(order.shippingCost || '0')
+  }
+
   return (
     <Dialog open={props.open} onOpenChange={() => props.onClose()}>
       <DialogContent className='sm:max-w-4xl'>
@@ -72,7 +79,7 @@ function ViewOrderModal(props: ViewOrderModalProps) {
                         <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-muted-foreground">{quantity} × ${unitPrice}</p>
                       </div>
-                      <div className="font-semibold">${(quantity * unitPrice).toFixed(2)}</div>
+                      <div className="font-semibold">${(quantity * parseFloat(unitPrice)).toFixed(2)}</div>
                     </div>
                   </div>
                 ))}
@@ -81,7 +88,7 @@ function ViewOrderModal(props: ViewOrderModalProps) {
             <div>
               <h3 className="text-lg font-semibold mb-2">Summary</h3>
               <p><strong>Shipping Cost:</strong> ${props.selectedOrder.shippingCost}</p>
-              <p><strong>Total Price:</strong> ${props.selectedOrder.totalPrice}</p>
+              <p><strong>Total Price:</strong> ${getTotalPrice(props.selectedOrder)}</p>
             </div>
             <div className='text-right'>
               <h3 className="text-lg font-semibold mb-2">Order Details</h3>
