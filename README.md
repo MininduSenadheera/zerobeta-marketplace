@@ -11,6 +11,8 @@
 - Run docker compose up --build to build and start the services.
 - when on first run server will automatically seed some data
 - u can access the swagger docs by visiting localhost:8000/api/products/docs, localhost:8000/api/orders/docs, localhost:8000/api/users/docs
+- test cases can run by running npm run test on each service
+- even though microservices usually have multiple dbs I have used as single db as for the ease of demoing of this app. the tables work stand alone without any relationships mocking a db like behaviour
 - if you can see this on docker ✅ All services are up. you are good to go.
 
 ## Architecture diagram
