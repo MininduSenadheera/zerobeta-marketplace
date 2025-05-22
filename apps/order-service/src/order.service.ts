@@ -166,7 +166,7 @@ export class OrderService {
 
     const orderItems = await this.orderItemRepo.find({ where: { orderId } });
 
-    this.kafkaService.notifyStockAndOrderCountUpdate({ type: 'decrease', items: orderItems });
+    this.kafkaService.notifyStockAndOrderCountUpdate({ type: 'increase', items: orderItems });
 
     return order;
   }

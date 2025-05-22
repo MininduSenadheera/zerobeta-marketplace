@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IOrder } from '@/Helpers/Interfaces';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import config from '@/Helpers/config';
 import apiClient from '@/lib/apiClient';
+import { AuthContext } from '@/context/AuthContext';
 
 interface ViewOrderModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface ViewOrderModalProps {
 }
 
 function ViewOrderModal(props: ViewOrderModalProps) {
+  const { user } = useContext(AuthContext)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -98,7 +100,7 @@ function ViewOrderModal(props: ViewOrderModalProps) {
           </div>
         )}
         <DialogFooter className='flex-row justify-between sm:justify-between'>
-          {(props.selectedOrder && props.selectedOrder.status === 'Pending') ? (
+          {(props.selectedOrder && props.selectedOrder.status === 'Pending' && user?.userRole === 'Buyer') ? (
             <Button
               variant="destructive" disabled={isLoading}
               onClick={() => handleOrderCancel()}

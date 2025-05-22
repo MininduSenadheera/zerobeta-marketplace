@@ -53,7 +53,7 @@ export class KafkaEventService implements OnModuleInit {
 
   async createTempUser(email: string, firstname: string, lastname: string): Promise<string> {
     try {
-      const { id } = await firstValueFrom<{ id: string }>(
+      const id  = await firstValueFrom<string>(
         this.userClient.send('user.create.temp', { email, firstname, lastname })
       );
       return id;
