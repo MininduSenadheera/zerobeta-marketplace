@@ -20,9 +20,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import axios from 'axios';
 import config from '@/Helpers/config';
+import { AuthContext } from '@/context/AuthContext';
 
 function Product({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = use(params);
+  const { user } = useContext(AuthContext);
   const router = useRouter();
   const { addToCart } = useContext(CartContext);
   const [product, setProduct] = useState<IProduct | null>(null);
@@ -35,7 +37,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get<IProduct>(config.apiUrl + 'products/by-id/' + productId) 
+        const response = await axios.get<IProduct>(config.apiUrl + 'products/by-id/' + productId)
         setProduct(response.data)
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -113,17 +115,20 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
             From: {product.seller.country}
           </p>
           <QuantityField quantity={quantity} max={product.stock} setQuantity={setQuantity} />
+          {user?.userRole === 'Seller' && (
+            <p className="text-red-500">Sellers cant purchase products</p>
+          )}
           <div className="flex gap-3 my-4">
             <Button
               variant="outline"
               onClick={() => addToCart(product.id, quantity)}
-              disabled={isOutOfStock}
+              disabled={isOutOfStock || user?.userRole === 'Buyer'}
             >
               Add To Cart <ShoppingCart />
             </Button>
             <Button
               onClick={() => router.push(`/checkout?productId=${product.id}&quantity=${quantity}`)}
-              disabled={isOutOfStock}
+              disabled={isOutOfStock || user?.userRole === 'Buyer'}
             >
               Buy Now <ArrowRight />
             </Button>

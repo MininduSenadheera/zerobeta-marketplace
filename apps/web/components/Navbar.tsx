@@ -5,7 +5,7 @@ import { AuthContext } from '@/context/AuthContext'
 import { CartContext } from '@/context/CartContext'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from './ui/button'
-import { Search, ShoppingCartIcon, UserCircle } from 'lucide-react'
+import { ShoppingCartIcon, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { Avatar, AvatarFallback } from './ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
@@ -18,19 +18,12 @@ function Navbar() {
   const { user, logout } = useContext(AuthContext)
   const { cart } = useContext(CartContext)
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false)
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false)
   const router = useRouter()
   const pathname = usePathname()
 
   return (
     <header className='px-4 py-2 flex items-center backdrop-blur-xl shadow-sm sticky top-0 z-50 bg-white'>
       <SidebarTrigger className='flex md:hidden' />
-      <Button
-        size="icon" variant="ghost" onClick={() => setIsSearchOpen(!isSearchOpen)}
-        className='flex md:hidden'
-      >
-        <Search />
-      </Button>
       <div className='grow-1 flex justify-center sm:justify-start'>
         <Image
           src="/images/logo.png" width={100} height={100} className='cursor-pointer' alt='logo'
@@ -48,12 +41,6 @@ function Navbar() {
         ))}
       </div>
       <div className='flex gap-2 items-center'>
-        <Button
-          size="icon" variant="ghost" onClick={() => setIsSearchOpen(!isSearchOpen)}
-          className='hidden sm:flex'
-        >
-          <Search />
-        </Button>
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -77,7 +64,7 @@ function Navbar() {
             <UserCircle />
           </Button>
         )}
-        {pathname !== '/checkout' && (
+        {(pathname !== '/checkout' && user?.userRole === 'Buyer') && (
           <Button variant="ghost" onClick={() => setIsCartOpen((prevState) => !prevState)}>
             <ShoppingCartIcon />
             {cart.length > 0 && (

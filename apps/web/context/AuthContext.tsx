@@ -65,8 +65,10 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
       if (response.data) {
         setUser(response.data);
         return true;
+      } else {
+        logout();
+        return false;
       }
-      return false;
     } catch (error) {
       console.error('Token validation error:', error);
       logout();
