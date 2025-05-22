@@ -20,7 +20,7 @@ function ProductCard({ product }: { product: IProduct }) {
           <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-4">
-              <p className="text-md font-medium">${product.price.toFixed(2)}</p>
+              <p className="text-md font-medium">${product.price}</p>
               <p className="text-sm text-muted-foreground">{product.orderCount} sold</p>
             </div>
             {product.stock === 0 && (

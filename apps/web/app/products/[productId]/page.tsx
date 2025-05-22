@@ -98,7 +98,7 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
           </Breadcrumb>
           <h2 className="text-4xl font-semi-bold">{product.name}</h2>
           <div className="flex items-center gap-4">
-            <h4 className="text-3xl font-bold">${product.price.toFixed(2)}</h4>
+            <h4 className="text-3xl font-bold">${product.price}</h4>
             <p className="text-sm text-muted-foreground">{product.orderCount} sold</p>
           </div>
           <div>
@@ -122,13 +122,13 @@ function Product({ params }: { params: Promise<{ productId: string }> }) {
             <Button
               variant="outline"
               onClick={() => addToCart(product.id, quantity)}
-              disabled={isOutOfStock || user?.userRole === 'Buyer'}
+              disabled={isOutOfStock || user?.userRole === 'Seller'}
             >
               Add To Cart <ShoppingCart />
             </Button>
             <Button
               onClick={() => router.push(`/checkout?productId=${product.id}&quantity=${quantity}`)}
-              disabled={isOutOfStock || user?.userRole === 'Buyer'}
+              disabled={isOutOfStock || user?.userRole === 'Seller'}
             >
               Buy Now <ArrowRight />
             </Button>

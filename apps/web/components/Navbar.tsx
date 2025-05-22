@@ -64,7 +64,7 @@ function Navbar() {
             <UserCircle />
           </Button>
         )}
-        {(pathname !== '/checkout' && user?.userRole === 'Buyer') && (
+        {(pathname !== '/checkout' && user?.userRole !== 'Seller') && (
           <Button variant="ghost" onClick={() => setIsCartOpen((prevState) => !prevState)}>
             <ShoppingCartIcon />
             {cart.length > 0 && (

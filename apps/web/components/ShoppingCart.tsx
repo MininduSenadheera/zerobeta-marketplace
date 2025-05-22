@@ -87,7 +87,7 @@ function ShoppingCart(props: { isCartOpen: boolean, setIsCartOpen: CallableFunct
                             >
                               {product.name}
                             </h2>
-                            <p className="text-sm text-muted-foreground">Price: ${product.price.toFixed(2)}</p>
+                            <p className="text-sm text-muted-foreground">Price: ${product.price}</p>
                           </div>
                           <Button
                             variant="ghost" size="icon"

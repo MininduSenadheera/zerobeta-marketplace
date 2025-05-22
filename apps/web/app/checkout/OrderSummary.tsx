@@ -35,7 +35,7 @@ function OrderSummary({ productsAndQuantities, shipping }: OrderSummaryProps) {
                   />
                   <div className='text-start grow-1'>
                     <h6 className='text-xl'>{product.name}</h6>
-                    <p className='text-sm text-muted-foreground'>${product.price.toFixed(2)} X {item.quantity}</p>
+                    <p className='text-sm text-muted-foreground'>${product.price} X {item.quantity}</p>
                   </div>
                   <p className='font-bold'>${((product.price || 0) * item.quantity).toFixed(2)}</p>
                 </CardContent>
