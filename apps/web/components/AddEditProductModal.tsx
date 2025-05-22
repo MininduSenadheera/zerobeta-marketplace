@@ -9,6 +9,7 @@ import { Label } from './ui/label';
 import { toast } from 'sonner';
 import config from '@/Helpers/config';
 import apiClient from '@/lib/apiClient';
+import axios from 'axios';
 
 interface AddEditProductModalProps {
   open: boolean;
@@ -78,8 +79,12 @@ function AddEditProductModal(props: AddEditProductModalProps) {
       props.reloadProducts();
       closeModal();
     } catch (error) {
-      toast.error(props.selectedProduct ? 'Failed to update product' : 'Failed to add product', { description: 'An unknown error has occurred' });
-      console.log(error);
+      console.error(error)
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        toast.error(props.selectedProduct ? 'Failed to update product' : 'Failed to add product', { description: error.response.data.message });
+      } else {
+        toast.error(props.selectedProduct ? 'Failed to update product' : 'Failed to add product', { description: 'An unknown error has occurred' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -97,8 +102,12 @@ function AddEditProductModal(props: AddEditProductModalProps) {
       props.reloadProducts();
       closeModal();
     } catch (error) {
-      toast.error('Failed to delete product', { description: 'An unknown error has occurred' });
-      console.log(error);
+      console.error(error)
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        toast.error('Failed to delete product', { description: error.response.data.message });
+      } else {
+        toast.error('Failed to delete product', { description: 'An unknown error has occurred' });
+      }
     } finally {
       setIsDeleteLoading(false);
     }
