@@ -8,6 +8,7 @@ import * as redisStore from 'ioredis';
 import { RedisService } from './redis/redis.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { KafkaEventService } from './kafka/kafka.service';
+import { ProductSeeder } from './seed/seeder';
 
 @Module({
   imports: [
@@ -42,6 +43,6 @@ import { KafkaEventService } from './kafka/kafka.service';
     ]),
   ],
   controllers: [ProductController],
-  providers: [ProductService, RedisService, KafkaEventService],
+  providers: [ProductService, RedisService, KafkaEventService, ProductSeeder],
 })
 export class ProductModule { }

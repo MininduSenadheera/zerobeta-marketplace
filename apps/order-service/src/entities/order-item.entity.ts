@@ -16,9 +16,9 @@ export class OrderItem {
   @Column({ type: 'uuid' })
   productId: string;
 
-  @Column()
+  @Column({ type: 'int' })
   quantity: number;
 
-  @Column('decimal')
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   unitPrice: number;
 }

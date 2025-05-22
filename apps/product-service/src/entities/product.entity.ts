@@ -14,13 +14,13 @@ export class Product {
   @Column({ length: 100 })
   description: string;
 
-  @Column()
+  @Column({type: 'decimal', precision: 10, scale: 2})
   price: number;
 
-  @Column()
+  @Column({type: 'int'})
   stock: number;
 
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   orderCount: number;
 
   @Column({ default: false })

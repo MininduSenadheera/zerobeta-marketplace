@@ -21,7 +21,7 @@ export class Order {
   @Column({ type: 'text' })
   shipping: string;
 
-  @Column('decimal')
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   shippingCost: number;
 
   @Column({ type: 'text', default: 'Pending' })

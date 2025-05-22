@@ -7,6 +7,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
 import { KafkaEventService } from './kafka/kafka.service';
+import { OrderSeeder } from './seed/seeder';
 
 @Module({
   imports: [
@@ -48,6 +49,6 @@ import { KafkaEventService } from './kafka/kafka.service';
     ScheduleModule.forRoot(),
   ],
   controllers: [OrderController],
-  providers: [OrderService, KafkaEventService],
+  providers: [OrderService, KafkaEventService, OrderSeeder],
 })
 export class OrderModule { }
