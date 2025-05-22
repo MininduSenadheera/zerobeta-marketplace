@@ -17,5 +17,5 @@ until curl -s http://user-service:3000/health > /dev/null; do
   sleep 2
 done
 
-echo "✅ All services are up. Starting Nginx..."
+echo "✅ All services are up."
 exec nginx -g 'daemon off;'
